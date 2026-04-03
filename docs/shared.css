@@ -57,6 +57,7 @@
 
   /* Transitions */
   --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
   --transition: all 0.2s var(--ease);
   --transition-slow: all 0.4s var(--ease);
 }
@@ -80,6 +81,11 @@ body {
   color: var(--text-primary);
   line-height: 1.6;
   overflow-x: hidden;
+}
+
+::selection {
+  background: rgba(168, 85, 247, 0.3);
+  color: #fff;
 }
 
 /* ─── Background Texture ─── */
@@ -162,6 +168,7 @@ a:hover {
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   background: rgba(0, 0, 0, 0.7);
   border-bottom: 1px solid var(--border);
+  transition: background 0.3s var(--ease);
 }
 
 .nav-inner {
@@ -638,6 +645,10 @@ a:hover {
   color: var(--text-secondary);
 }
 
+.footer-brand-link {
+  margin-bottom: 8px;
+}
+
 /* ─── Animations ─── */
 @keyframes fadeIn {
   from { opacity: 0; }
@@ -654,6 +665,16 @@ a:hover {
   to { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
 /* Entrance animation class — added by IntersectionObserver */
 .reveal {
   opacity: 0;
@@ -666,15 +687,134 @@ a:hover {
   transform: translateY(0);
 }
 
+/* Staggered children reveals */
+.reveal-stagger > * {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.4s var(--ease), transform 0.4s var(--ease);
+}
+
+.reveal-stagger.visible > *:nth-child(1) { transition-delay: 0s; opacity: 1; transform: translateY(0); }
+.reveal-stagger.visible > *:nth-child(2) { transition-delay: 0.06s; opacity: 1; transform: translateY(0); }
+.reveal-stagger.visible > *:nth-child(3) { transition-delay: 0.12s; opacity: 1; transform: translateY(0); }
+.reveal-stagger.visible > *:nth-child(4) { transition-delay: 0.18s; opacity: 1; transform: translateY(0); }
+.reveal-stagger.visible > *:nth-child(5) { transition-delay: 0.24s; opacity: 1; transform: translateY(0); }
+.reveal-stagger.visible > *:nth-child(6) { transition-delay: 0.30s; opacity: 1; transform: translateY(0); }
+.reveal-stagger.visible > *:nth-child(7) { transition-delay: 0.36s; opacity: 1; transform: translateY(0); }
+
 /* ─── Scrollbar ─── */
 ::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.08); border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.15); }
 
+/* ─── Accessibility ─── */
+:focus-visible {
+  outline: 2px solid var(--accent-purple);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--accent-purple);
+  outline-offset: 2px;
+}
+
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 16px;
+  padding: 8px 16px;
+  background: var(--accent-purple);
+  color: white;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+  z-index: 9999;
+  transition: top 0.2s;
+}
+
+.skip-link:focus {
+  top: 8px;
+}
+
+/* ─── Hamburger Menu (Mobile) ─── */
+.nav-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  cursor: pointer;
+  padding: 4px;
+  z-index: 1001;
+}
+
+.nav-toggle svg {
+  width: 22px;
+  height: 22px;
+}
+
+/* ─── Prefers Reduced Motion ─── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+
+  .reveal-stagger > * {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 /* ─── Responsive ─── */
 @media (max-width: 768px) {
-  .nav-links { display: none; }
+  .nav-toggle { display: flex; }
+
+  .nav-links {
+    display: none;
+    position: fixed;
+    top: 56px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    flex-direction: column;
+    gap: 0;
+    background: rgba(0, 0, 0, 0.96);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    padding: 24px;
+    z-index: 999;
+  }
+
+  .nav-links.open {
+    display: flex;
+    animation: fadeIn 0.2s var(--ease);
+  }
+
+  .nav-links a {
+    font-size: 18px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-links a.nav-cta {
+    margin-top: 12px;
+    justify-content: center;
+    font-size: 16px;
+    padding: 14px;
+    border-bottom: none;
+  }
+
   .nav-social { display: none; }
 
   .footer-inner {
@@ -692,5 +832,13 @@ a:hover {
 @media (max-width: 480px) {
   :root {
     --container-padding: 16px;
+  }
+
+  h1 {
+    font-size: clamp(2rem, 8vw, 2.8rem);
+  }
+
+  h2 {
+    font-size: clamp(1.4rem, 5vw, 1.8rem);
   }
 }

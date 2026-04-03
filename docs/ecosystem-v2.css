@@ -163,14 +163,24 @@
   flex-shrink: 0;
 }
 
-/* Tab Panels */
+/* Tab Panels — cross-fade transition */
 .tab-panel {
   display: none;
-  animation: slideUp 0.35s var(--ease);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.35s var(--ease), transform 0.35s var(--ease);
 }
 
 .tab-panel.active {
   display: block;
+  opacity: 1;
+  transform: translateY(0);
+  animation: tabFadeIn 0.4s var(--ease);
+}
+
+@keyframes tabFadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .panel-grid {
@@ -301,6 +311,7 @@
   overflow: hidden;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
   transition: transform 0.4s var(--ease);
+  animation: cardEntrance 0.8s var(--ease) 0.2s both;
 }
 
 .virtual-card:hover {
@@ -508,6 +519,28 @@
   transform: translate(0, 0);
 }
 
+/* Product staggered entrance */
+.products-grid .product-card:nth-child(1) { animation-delay: 0s; }
+.products-grid .product-card:nth-child(2) { animation-delay: 0.06s; }
+.products-grid .product-card:nth-child(3) { animation-delay: 0.12s; }
+.products-grid .product-card:nth-child(4) { animation-delay: 0.18s; }
+.products-grid .product-card:nth-child(5) { animation-delay: 0.24s; }
+.products-grid .product-card:nth-child(6) { animation-delay: 0.30s; }
+
+/* ─── Sponsors Section ─── */
+.sponsors-section {
+  padding-top: 0;
+}
+
+.sponsors-title {
+  text-align: center;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--text-muted);
+  margin-bottom: 24px;
+}
+
 /* ─── Header Link ─── */
 .header-link {
   font-size: 12px;
@@ -531,6 +564,38 @@
 .terminal-line .warn { color: var(--accent-gold); }
 .terminal-line .error { color: #ef4444; }
 .terminal-line .highlight { color: var(--accent-cyan); }
+
+/* Terminal line entrance animation */
+.terminal-line {
+  animation: termLineIn 0.15s var(--ease) both;
+}
+
+@keyframes termLineIn {
+  from { opacity: 0; transform: translateX(-4px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* Result card slide-in */
+.result-card {
+  animation: resultSlideIn 0.5s var(--ease-spring) both;
+}
+
+@keyframes resultSlideIn {
+  from { opacity: 0; transform: translateY(16px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Virtual card entrance */
+@keyframes cardEntrance {
+  from {
+    opacity: 0;
+    transform: perspective(600px) rotateY(15deg) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: perspective(600px) rotateY(0) translateY(0);
+  }
+}
 
 /* ─── Responsive ─── */
 @media (max-width: 768px) {
