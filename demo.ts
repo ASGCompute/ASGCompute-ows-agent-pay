@@ -37,7 +37,7 @@ app.post('/api/inference', (req, res) => {
           scheme: 'exact',
           network: 'testnet',
           amount: '5000000', // 0.5 XLM
-          payTo: 'GBQ3XCO23DBU3MY4V7NYNFWX4NIVV35HUKM6Z2D6W7SGEAIF2G2X6KRD',
+          payTo: 'GAEVWHXQAPK7HZIGA4J6S5LCGS7IJ5KCWQVYW4Z4USQ63Z6WJQIFAJOF',
           asset: 'native',
         },
       ],
