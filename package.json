@@ -1,0 +1,41 @@
+{
+  "name": "@asgcard/ows-agent-pay",
+  "version": "1.0.0",
+  "description": "OWS-compliant autonomous payment SDK for AI agents — built on Stellar. Handles 402 Payment Required challenges, policy-gated budgets, and on-chain settlement without human intervention.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "demo": "npx ts-node demo.ts",
+    "test": "echo \"See demo script\" && exit 0"
+  },
+  "keywords": [
+    "ows",
+    "open-wallet-standard",
+    "ai-agents",
+    "autonomous-payments",
+    "x402",
+    "stellar",
+    "402-payment-required",
+    "machine-to-machine",
+    "asg-pay"
+  ],
+  "author": "ASG Compute <team@asgcard.dev>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ASGCompute/ASGCompute-ows-agent-pay"
+  },
+  "homepage": "https://pay.asgcard.dev",
+  "dependencies": {
+    "@stellar/stellar-sdk": "^13.3.0",
+    "axios": "^1.14.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^25.5.0",
+    "express": "^5.1.0",
+    "ts-node": "^10.9.0",
+    "typescript": "^6.0.2"
+  }
+}
