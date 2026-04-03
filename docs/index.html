@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OWS Agent Pay — Interactive x402 Demo</title>
+  <meta name="description" content="Live interactive demo of the OWS Agent Pay SDK — autonomous x402 payments on Base for AI agents.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- ─── Hero Section ─── -->
+  <header class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <div class="badge">OWS Hackathon 2025 • x402 Protocol</div>
+      <h1>
+        <span class="gradient-text">OWS Agent Pay</span>
+      </h1>
+      <p class="subtitle">Autonomous payment SDK for AI agents — multi-chain x402 settlement on <strong>Base</strong>, Stellar & more</p>
+      <div class="hero-badges">
+        <span class="chain-badge base">Base (Coinbase L2)</span>
+        <span class="chain-badge stellar">Stellar</span>
+        <span class="chain-badge x402">x402 Protocol</span>
+        <span class="chain-badge ows">OWS v1.0</span>
+      </div>
+      <div class="hero-actions">
+        <button id="startDemo" class="btn-primary pulse">
+          <span class="btn-icon">▶</span> Run Live Demo
+        </button>
+        <a href="https://github.com/ASGCompute/ASGCompute-ows-agent-pay" target="_blank" class="btn-secondary">
+          <span class="btn-icon">⭐</span> View Source
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ─── Architecture Overview ─── -->
+  <section class="architecture">
+    <h2>How It Works</h2>
+    <div class="flow-diagram">
+      <div class="flow-step" id="step-agent">
+        <div class="flow-icon">🤖</div>
+        <div class="flow-label">AI Agent</div>
+        <div class="flow-desc">Calls performTask()</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step" id="step-api">
+        <div class="flow-icon">🌐</div>
+        <div class="flow-label">API Server</div>
+        <div class="flow-desc">Returns HTTP 402</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step" id="step-policy">
+        <div class="flow-icon">🛡️</div>
+        <div class="flow-label">Policy Engine</div>
+        <div class="flow-desc">Budget + allowlist</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step" id="step-settle">
+        <div class="flow-icon">⛓️</div>
+        <div class="flow-label">Base Settlement</div>
+        <div class="flow-desc">On-chain via viem</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step" id="step-proof">
+        <div class="flow-icon">✅</div>
+        <div class="flow-label">X-PAYMENT</div>
+        <div class="flow-desc">Proof → 200 OK</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Interactive Terminal Demo ─── -->
+  <section class="demo-section" id="demoSection">
+    <h2>Interactive Demo</h2>
+    <p class="demo-subtitle">Watch the full x402 payment flow execute in real-time — no blockchain needed</p>
+
+    <!-- Config Panel -->
+    <div class="config-panel">
+      <h3>⚙️ Agent Configuration</h3>
+      <div class="config-grid">
+        <div class="config-item">
+          <label>Monthly Budget (USD)</label>
+          <input type="number" id="cfgBudget" value="10" min="1" max="1000">
+        </div>
+        <div class="config-item">
+          <label>Max Per Transaction (USD)</label>
+          <input type="number" id="cfgMaxTx" value="1" min="0.01" max="100" step="0.01">
+        </div>
+        <div class="config-item">
+          <label>Settlement Chain</label>
+          <select id="cfgChain">
+            <option value="base-sepolia" selected>Base Sepolia (eip155:84532)</option>
+            <option value="base">Base Mainnet (eip155:8453)</option>
+            <option value="stellar-testnet">Stellar Testnet</option>
+          </select>
+        </div>
+        <div class="config-item">
+          <label>API Endpoint</label>
+          <input type="text" id="cfgEndpoint" value="/api/inference" readonly>
+        </div>
+      </div>
+    </div>
+
+    <!-- Terminal -->
+    <div class="terminal">
+      <div class="terminal-header">
+        <div class="terminal-dots">
+          <span class="dot red"></span>
+          <span class="dot yellow"></span>
+          <span class="dot green"></span>
+        </div>
+        <span class="terminal-title">ows-agent-pay — demo.ts</span>
+        <button id="rerunBtn" class="terminal-btn" title="Re-run demo">⟳</button>
+      </div>
+      <div class="terminal-body" id="terminal">
+        <div class="terminal-line dim">Click "Run Live Demo" to start the x402 payment flow…</div>
+      </div>
+    </div>
+
+    <!-- Stats Panel -->
+    <div class="stats-panel" id="statsPanel">
+      <div class="stat-card">
+        <div class="stat-label">Status</div>
+        <div class="stat-value" id="statStatus">Idle</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Chain</div>
+        <div class="stat-value" id="statChain">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Payment</div>
+        <div class="stat-value" id="statPayment">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Budget Used</div>
+        <div class="stat-value" id="statBudget">$0 / $10</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Tx Hash</div>
+        <div class="stat-value hash" id="statTxHash">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Total Time</div>
+        <div class="stat-value" id="statTime">—</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── x402 Deep Dive ─── -->
+  <section class="deepdive">
+    <h2>x402 Protocol Flow</h2>
+    <div class="protocol-grid">
+      <div class="protocol-card">
+        <div class="protocol-step">1</div>
+        <h3>HTTP Request</h3>
+        <pre><code>POST /api/inference HTTP/1.1
+Content-Type: application/json
+
+{
+  "model": "gpt-4",
+  "messages": [...]
+}</code></pre>
+      </div>
+      <div class="protocol-card">
+        <div class="protocol-step">2</div>
+        <h3>402 Challenge</h3>
+        <pre><code>HTTP/1.1 402 Payment Required
+
+{
+  "x402Version": 2,
+  "accepts": [{
+    "scheme": "exact",
+    "network": "base-sepolia",
+    "amount": "500000000000000",
+    "payTo": "0xDead...8B3c",
+    "asset": "ETH"
+  }]
+}</code></pre>
+      </div>
+      <div class="protocol-card">
+        <div class="protocol-step">3</div>
+        <h3>On-Chain Settlement</h3>
+        <pre><code>// BasePaymentAdapter (viem)
+const hash = await wallet
+  .sendTransaction({
+    to: "0xDead...8B3c",
+    value: 500000000000000n,
+    chain: baseSepolia,
+  });</code></pre>
+      </div>
+      <div class="protocol-card">
+        <div class="protocol-step">4</div>
+        <h3>X-PAYMENT Retry</h3>
+        <pre><code>POST /api/inference HTTP/1.1
+X-PAYMENT: eyJ4NDAyVmVyc2lvbi...
+
+→ HTTP/1.1 200 OK
+{
+  "status": "success",
+  "data": "The answer is 42."
+}</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Sponsor Alignment ─── -->
+  <section class="sponsors">
+    <h2>Sponsor Alignment</h2>
+    <div class="sponsor-grid">
+      <div class="sponsor-card active">
+        <div class="sponsor-logo">🔵</div>
+        <h3>Base</h3>
+        <p>Primary settlement chain. x402 was built by Coinbase for Base.</p>
+        <span class="sponsor-tag">Native x402</span>
+      </div>
+      <div class="sponsor-card active">
+        <div class="sponsor-logo">⭕</div>
+        <h3>Circle (USDC)</h3>
+        <p>Settlement asset for EVM chains. Native USDC on Base.</p>
+        <span class="sponsor-tag">Settlement Asset</span>
+      </div>
+      <div class="sponsor-card">
+        <div class="sponsor-logo">🟦</div>
+        <h3>Arbitrum</h3>
+        <p>Same viem stack — adapter ready for deployment.</p>
+        <span class="sponsor-tag">EVM Compatible</span>
+      </div>
+      <div class="sponsor-card">
+        <div class="sponsor-logo">⚡</div>
+        <h3>Stellar</h3>
+        <p>Production adapter live via ASG Pay mainnet.</p>
+        <span class="sponsor-tag">Live</span>
+      </div>
+      <div class="sponsor-card">
+        <div class="sponsor-logo">🌉</div>
+        <h3>Li.Fi</h3>
+        <p>Cross-chain settlement aggregator — roadmap integration.</p>
+        <span class="sponsor-tag">Roadmap</span>
+      </div>
+      <div class="sponsor-card">
+        <div class="sponsor-logo">💧</div>
+        <h3>Sui</h3>
+        <p>Move-based adapter planned for multi-chain expansion.</p>
+        <span class="sponsor-tag">Planned</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Try It Yourself ─── -->
+  <section class="try-it">
+    <h2>Try It Yourself</h2>
+    <div class="code-block">
+      <div class="code-header">
+        <span>Terminal</span>
+        <button class="copy-btn" onclick="copyCode()">📋 Copy</button>
+      </div>
+      <pre><code id="installCode">git clone https://github.com/ASGCompute/ASGCompute-ows-agent-pay.git
+cd ASGCompute-ows-agent-pay
+npm install
+npx ts-node demo.ts --simulate</code></pre>
+    </div>
+  </section>
+
+  <!-- ─── Footer ─── -->
+  <footer>
+    <div class="footer-content">
+      <div class="footer-brand">
+        <span class="gradient-text">ASG Pay</span>
+        <p>Autonomous payments for autonomous agents</p>
+      </div>
+      <div class="footer-links">
+        <a href="https://pay.asgcard.dev" target="_blank">pay.asgcard.dev</a>
+        <a href="https://fund.asgcard.dev" target="_blank">fund.asgcard.dev</a>
+        <a href="https://asgcard.dev" target="_blank">asgcard.dev</a>
+        <a href="https://github.com/ASGCompute/ASGCompute-ows-agent-pay" target="_blank">GitHub</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="demo.js"></script>
+</body>
+</html>
