@@ -19,6 +19,8 @@
 
 > **🎮 [Try the interactive demo →](https://asgcompute.github.io/ASGCompute-ows-agent-pay/)** — no install, no wallet, no ETH needed. Watch the full x402 flow in your browser.
 
+> **🌐 [View the full ecosystem demo →](https://asgcompute.github.io/ASGCompute-ows-agent-pay/ecosystem.html)** — Fund → Card → Pay: the complete autonomous agent financial stack.
+
 </div>
 
 ---

@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ASG Pay Ecosystem — Complete Agent Financial Stack</title>
+  <meta name="description" content="Full autonomous agent financial stack: Fund agents, issue virtual cards, and settle payments via x402 on Base & Stellar. Built by ASG Pay." />
+  <meta property="og:title" content="ASG Pay Ecosystem — Complete Agent Financial Stack" />
+  <meta property="og:description" content="Fund → Card → Pay: the complete lifecycle of autonomous agent payments." />
+  <meta property="og:type" content="website" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>" />
+  <link rel="stylesheet" href="ecosystem.css" />
+</head>
+<body>
+
+  <a href="index.html" class="back-link">← Back to SDK Demo</a>
+
+  <!-- ═══ HERO ═══ -->
+  <section class="hero">
+    <div class="hero-badge">🏆 OWS Hackathon 2025 • Production Ecosystem</div>
+    <h1>ASG Pay Ecosystem</h1>
+    <p class="hero-subtitle">
+      The complete autonomous agent financial stack — fund agents, issue virtual cards,
+      and settle payments via <strong>x402</strong> on <strong>Base</strong> &amp; <strong>Stellar</strong>.
+      <em>All products are live in production.</em>
+    </p>
+
+    <!-- Lifecycle Flow -->
+    <div class="lifecycle">
+      <div class="lifecycle-step active" data-tab="fund">
+        <span class="emoji">💰</span>
+        <span class="label">Fund</span>
+        <span class="sub">fund.asgcard.dev</span>
+      </div>
+      <span class="lifecycle-arrow">→</span>
+      <div class="lifecycle-step" data-tab="card">
+        <span class="emoji">💳</span>
+        <span class="label">Card</span>
+        <span class="sub">asgcard.dev</span>
+      </div>
+      <span class="lifecycle-arrow">→</span>
+      <div class="lifecycle-step" data-tab="pay">
+        <span class="emoji">⚡</span>
+        <span class="label">Pay</span>
+        <span class="sub">x402 on Base</span>
+      </div>
+      <span class="lifecycle-arrow">→</span>
+      <div class="lifecycle-step">
+        <span class="emoji">✅</span>
+        <span class="label">Settled</span>
+        <span class="sub">On-chain</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ TABS ═══ -->
+  <section class="tabs">
+    <nav class="tab-nav">
+      <button class="tab-btn active" data-tab="fund">
+        💰 Fund Agent
+        <span class="badge">LIVE</span>
+      </button>
+      <button class="tab-btn" data-tab="card">
+        💳 Issue Card
+        <span class="badge">LIVE</span>
+      </button>
+      <button class="tab-btn" data-tab="pay">
+        ⚡ x402 Pay
+        <span class="badge">LIVE</span>
+      </button>
+    </nav>
+
+    <!-- ═══ FUND PANEL ═══ -->
+    <div class="tab-panel active" id="panel-fund">
+      <div class="panel-grid">
+        <!-- Left: Interactive Checkout -->
+        <div class="demo-card">
+          <div class="card-header">
+            <h3><span class="live-dot"></span> ASG Pay — Agent Checkout</h3>
+            <a href="https://fund.asgcard.dev" target="_blank" class="link">fund.asgcard.dev ↗</a>
+          </div>
+          <div class="card-body">
+            <div class="fund-checkout">
+              <div class="agent-profile">
+                <div class="agent-avatar">🤖</div>
+                <div class="agent-info">
+                  <h4>TradeBot Agent</h4>
+                  <p>GDQP2K...YSHWM • Stellar</p>
+                </div>
+              </div>
+              <div class="fund-amount-display">
+                <div class="amount">$50.00</div>
+                <div class="token">USDC on Stellar</div>
+              </div>
+              <div class="payment-methods">
+                <div class="payment-method selected" onclick="selectPaymentMethod(this)">
+                  <span class="icon">💳</span>
+                  <span class="name">Credit Card / Bank</span>
+                  <span class="status">via Stripe</span>
+                </div>
+                <div class="payment-method" onclick="selectPaymentMethod(this)">
+                  <span class="icon">🔄</span>
+                  <span class="name">Bridge from EVM</span>
+                  <span class="status">via ROZO</span>
+                </div>
+                <div class="payment-method" onclick="selectPaymentMethod(this)">
+                  <span class="icon">📤</span>
+                  <span class="name">Direct Send</span>
+                  <span class="status">Freighter</span>
+                </div>
+              </div>
+              <button class="btn btn-fund btn-full" id="btn-fund" data-run="fund">▶ Simulate Funding</button>
+              <div class="progress-bar"><div class="progress-fill fund" id="progress-fund"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Terminal + Code -->
+        <div>
+          <div class="demo-card" style="margin-bottom: 16px;">
+            <div class="terminal">
+              <div class="terminal-bar">
+                <span class="terminal-dot red"></span>
+                <span class="terminal-dot yellow"></span>
+                <span class="terminal-dot green"></span>
+                <span class="terminal-title">fund-flow — demo.ts</span>
+              </div>
+              <div class="terminal-body" id="terminal-fund">
+                <div class="terminal-line dim">Press "Simulate Funding" to start...</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="code-block">
+            <div class="code-block-header">
+              <span>agent-code.ts</span>
+              <span>@asgcard/fund</span>
+            </div>
+            <pre><span class="kw">import</span> { generateFundLink } <span class="kw">from</span> <span class="str">'@asgcard/fund'</span>;
+
+<span class="cm">// Agent generates a payment link — user pays, agent gets funded</span>
+<span class="kw">const</span> { url } = <span class="kw">await</span> <span class="fn">generateFundLink</span>({
+  toAddress: <span class="str">'GDQP2KPQ...YSHWM'</span>,
+  toAmount: <span class="num">50</span>,
+  toToken: <span class="str">'USDC'</span>,
+  agentName: <span class="str">'TradeBot'</span>,
+});
+<span class="cm">// → https://fund.asgcard.dev/?agentName=TradeBot&toAmount=50...</span></pre>
+          </div>
+
+          <div class="result-card success" id="result-fund" style="display:none;">
+            <div class="result-title">✅ Agent Funded</div>
+            <div class="result-row"><span class="result-label">Amount</span><span class="result-value">50.00 USDC</span></div>
+            <div class="result-row"><span class="result-label">Network</span><span class="result-value">Stellar</span></div>
+            <div class="result-row"><span class="result-label">Method</span><span class="result-value">Stripe (Visa ••4242)</span></div>
+            <div class="result-row"><span class="result-label">Tx</span><span class="result-value">b4f7e8a9c6d5...</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ CARD PANEL ═══ -->
+    <div class="tab-panel" id="panel-card">
+      <div class="panel-grid">
+        <!-- Left: Virtual Card Display -->
+        <div class="demo-card">
+          <div class="card-header">
+            <h3><span class="live-dot"></span> ASG Card — Virtual Issuing</h3>
+            <a href="https://asgcard.dev" target="_blank" class="link">asgcard.dev ↗</a>
+          </div>
+          <div class="card-body">
+            <div class="virtual-card" id="virtual-card-display">
+              <div class="card-top">
+                <div>
+                  <div class="card-brand">ASG CARD</div>
+                  <div class="card-type">VIRTUAL • SINGLE-USE</div>
+                </div>
+                <div class="card-mc-logo">
+                  <div class="circle"></div>
+                  <div class="circle"></div>
+                </div>
+              </div>
+              <div class="card-chip"></div>
+              <div class="card-number">5425 2334 •••• 7891</div>
+              <div class="card-bottom">
+                <div>
+                  <div class="card-holder-label">CARDHOLDER</div>
+                  <div class="card-holder-name">TRADE BOT AGENT</div>
+                </div>
+                <div class="card-expiry">
+                  <div class="card-holder-label">EXPIRES</div>
+                  <div class="card-holder-name">12/26</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card-limits">
+              <div class="limit-item">
+                <div class="value">$15.00</div>
+                <div class="label">Spend Limit</div>
+              </div>
+              <div class="limit-item">
+                <div class="value">1</div>
+                <div class="label">Max Transactions</div>
+              </div>
+              <div class="limit-item">
+                <div class="value">&lt; 3s</div>
+                <div class="label">Issuance Time</div>
+              </div>
+              <div class="limit-item">
+                <div class="value">Auto</div>
+                <div class="label">Self-Destruct</div>
+              </div>
+            </div>
+
+            <button class="btn btn-card btn-full" id="btn-card" data-run="card" style="margin-top: 16px;">▶ Simulate Card Issuance</button>
+            <div class="progress-bar"><div class="progress-fill card" id="progress-card"></div></div>
+          </div>
+        </div>
+
+        <!-- Right: Terminal + Code -->
+        <div>
+          <div class="demo-card" style="margin-bottom: 16px;">
+            <div class="terminal">
+              <div class="terminal-bar">
+                <span class="terminal-dot red"></span>
+                <span class="terminal-dot yellow"></span>
+                <span class="terminal-dot green"></span>
+                <span class="terminal-title">card-flow — agent.ts</span>
+              </div>
+              <div class="terminal-body" id="terminal-card">
+                <div class="terminal-line dim">Press "Simulate Card Issuance" to start...</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="code-block">
+            <div class="code-block-header">
+              <span>agent-code.ts</span>
+              <span>@asgcard/sdk</span>
+            </div>
+            <pre><span class="kw">import</span> { AgentCard } <span class="kw">from</span> <span class="str">'@asgcard/sdk'</span>;
+
+<span class="cm">// Agent provisions a single-use virtual Mastercard</span>
+<span class="kw">const</span> card = <span class="kw">await</span> AgentCard.<span class="fn">create</span>({
+  spendLimit: <span class="num">15</span>,              <span class="cm">// $15 max</span>
+  maxTransactions: <span class="num">1</span>,          <span class="cm">// auto-destroy after 1 tx</span>
+  cardholderName: <span class="str">'TRADE BOT'</span>,
+});
+
+<span class="cm">// Use the card to buy API credits</span>
+<span class="kw">await</span> <span class="fn">purchaseWithCard</span>(card, <span class="str">'serpapi.com'</span>, <span class="num">15</span>);</pre>
+          </div>
+
+          <div class="result-card success" id="result-card" style="display:none;">
+            <div class="result-title">✅ Card Used & Destroyed</div>
+            <div class="result-row"><span class="result-label">Merchant</span><span class="result-value">serpapi.com</span></div>
+            <div class="result-row"><span class="result-label">Amount</span><span class="result-value">$15.00</span></div>
+            <div class="result-row"><span class="result-label">Card Status</span><span class="result-value">🔥 Destroyed</span></div>
+            <div class="result-row"><span class="result-label">Issuer</span><span class="result-value">Stripe Issuing</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ PAY PANEL ═══ -->
+    <div class="tab-panel" id="panel-pay">
+      <div class="panel-grid">
+        <!-- Left: Config + Terminal -->
+        <div class="demo-card">
+          <div class="card-header">
+            <h3><span class="live-dot"></span> OWS Agent Pay — x402 Flow</h3>
+            <a href="https://github.com/ASGCompute/ASGCompute-ows-agent-pay" target="_blank" class="link">GitHub ↗</a>
+          </div>
+          <div class="card-body">
+            <div class="terminal">
+              <div class="terminal-bar">
+                <span class="terminal-dot red"></span>
+                <span class="terminal-dot yellow"></span>
+                <span class="terminal-dot green"></span>
+                <span class="terminal-title">ows-agent-pay — x402.ts</span>
+              </div>
+              <div class="terminal-body" id="terminal-pay">
+                <div class="terminal-line dim">Press "Run x402 Demo" to start...</div>
+              </div>
+            </div>
+            <button class="btn btn-pay btn-full" id="btn-pay" data-run="pay" style="margin-top: 16px;">▶ Run x402 Demo</button>
+            <div class="progress-bar"><div class="progress-fill pay" id="progress-pay"></div></div>
+          </div>
+        </div>
+
+        <!-- Right: Code + Result -->
+        <div>
+          <div class="code-block" style="margin-bottom: 16px;">
+            <div class="code-block-header">
+              <span>agent-code.ts</span>
+              <span>ows-agent-pay</span>
+            </div>
+            <pre><span class="kw">import</span> { OwsClient, BasePaymentAdapter } <span class="kw">from</span> <span class="str">'ows-agent-pay'</span>;
+
+<span class="kw">const</span> adapter = <span class="kw">new</span> <span class="fn">BasePaymentAdapter</span>({
+  privateKey: process.env.AGENT_KEY <span class="kw">as</span> <span class="op">`0x${string}`</span>,
+  network: <span class="str">'base-sepolia'</span>,
+});
+
+<span class="kw">const</span> agent = <span class="kw">new</span> <span class="fn">OwsClient</span>({
+  baseURL: <span class="str">'https://inference-api.example.com'</span>,
+  policy: {
+    monthlyBudget: <span class="num">10</span>,
+    maxAmountPerTransaction: <span class="num">1</span>,
+    allowedDestinations: [<span class="str">'0xDead71...'</span>],
+  },
+  adapter,
+});
+
+<span class="cm">// Agent code — zero payment logic!</span>
+<span class="kw">const</span> result = <span class="kw">await</span> agent.<span class="fn">performTask</span>(<span class="str">'/api/inference'</span>, {
+  model: <span class="str">'gpt-4o'</span>,
+  messages: [{ role: <span class="str">'user'</span>, content: <span class="str">'Analyze this report'</span> }],
+});</pre>
+          </div>
+
+          <div class="result-card success" id="result-pay" style="display:none;">
+            <div class="result-title">✅ x402 Payment Settled</div>
+            <div class="result-row"><span class="result-label">Protocol</span><span class="result-value">x402 v2</span></div>
+            <div class="result-row"><span class="result-label">Amount</span><span class="result-value">$0.50 (0.0005 ETH)</span></div>
+            <div class="result-row"><span class="result-label">Chain</span><span class="result-value">Base Sepolia</span></div>
+            <div class="result-row"><span class="result-label">Tx Hash</span><span class="result-value">0x9e8f7a6b5c...</span></div>
+            <div class="result-row"><span class="result-label">Policy</span><span class="result-value">$0.50 / $10.00 budget</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ ECOSYSTEM LINKS ═══ -->
+  <section class="ecosystem-links">
+    <h2>🌐 Live Production Products</h2>
+    <div class="links-grid">
+      <a href="https://fund.asgcard.dev" target="_blank" class="eco-link">
+        <span class="icon">💰</span>
+        <div class="info">
+          <h4>ASG Pay</h4>
+          <p>fund.asgcard.dev • Payment gateway</p>
+        </div>
+      </a>
+      <a href="https://asgcard.dev" target="_blank" class="eco-link">
+        <span class="icon">💳</span>
+        <div class="info">
+          <h4>ASG Card</h4>
+          <p>asgcard.dev • Virtual card issuing</p>
+        </div>
+      </a>
+      <a href="https://pay.asgcard.dev" target="_blank" class="eco-link">
+        <span class="icon">📚</span>
+        <div class="info">
+          <h4>Developer Docs</h4>
+          <p>pay.asgcard.dev • SDK documentation</p>
+        </div>
+      </a>
+      <a href="https://www.npmjs.com/package/@asgcard/fund" target="_blank" class="eco-link">
+        <span class="icon">📦</span>
+        <div class="info">
+          <h4>@asgcard/fund</h4>
+          <p>NPM • CLI payment link generator</p>
+        </div>
+      </a>
+      <a href="https://www.npmjs.com/package/@asgcard/sdk" target="_blank" class="eco-link">
+        <span class="icon">🔧</span>
+        <div class="info">
+          <h4>@asgcard/sdk</h4>
+          <p>NPM • Core SDK (100K+ downloads)</p>
+        </div>
+      </a>
+      <a href="https://github.com/ASGCompute/ASGCompute-ows-agent-pay" target="_blank" class="eco-link">
+        <span class="icon">⭐</span>
+        <div class="info">
+          <h4>OWS Agent Pay</h4>
+          <p>GitHub • x402 SDK (open-source)</p>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ═══ SPONSORS ═══ -->
+  <section class="sponsors">
+    <h3>Built on & Aligned with</h3>
+    <div class="sponsor-logos">
+      <span>BASE</span>
+      <span>STELLAR</span>
+      <span>CIRCLE</span>
+      <span>STRIPE</span>
+      <span>ROZO</span>
+      <span>ARBITRUM</span>
+      <span>LI.FI</span>
+    </div>
+  </section>
+
+  <script src="ecosystem.js"></script>
+</body>
+</html>
