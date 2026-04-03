@@ -15,7 +15,9 @@
 
 *The AI agent simply calls `performTask()` — the SDK handles payment, policy validation, on-chain settlement, and proof generation transparently.*
 
-[Documentation](https://pay.asgcard.dev) • [Demo](#-quick-start) • [Architecture](#-architecture) • [OWS Compliance](#-ows-spec-compliance)
+[Documentation](https://pay.asgcard.dev) • [**▶ Live Demo**](https://asgcompute.github.io/ASGCompute-ows-agent-pay/) • [Architecture](#-architecture) • [OWS Compliance](#-ows-spec-compliance)
+
+> **🎮 [Try the interactive demo →](https://asgcompute.github.io/ASGCompute-ows-agent-pay/)** — no install, no wallet, no ETH needed. Watch the full x402 flow in your browser.
 
 </div>
 
@@ -41,9 +43,14 @@ git clone https://github.com/ASGCompute/ASGCompute-ows-agent-pay.git
 cd ASGCompute-ows-agent-pay
 npm install
 
-# Run the Base Sepolia demo (auto-funds from Coinbase faucet)
+# Run the demo (simulated mode — no ETH needed)
+npx ts-node demo.ts --simulate
+
+# Or run with real Base Sepolia testnet
 npx ts-node demo.ts
 ```
+
+> 💡 **No setup?** [Try the browser demo →](https://asgcompute.github.io/ASGCompute-ows-agent-pay/)
 
 ### Expected Output
 
