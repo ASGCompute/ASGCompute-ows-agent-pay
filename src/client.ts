@@ -1,11 +1,12 @@
 import axios, { AxiosInstance, AxiosError, AxiosResponse } from 'axios';
-import { StellarPaymentAdapter } from './stellar';
+import { PaymentAdapter } from './adapters/types';
 import { BudgetPolicy, PolicyEngine } from './policy';
 
 export interface OWSClientOptions {
   baseURL: string;
   policy: BudgetPolicy;
-  stellarAdapter: StellarPaymentAdapter;
+  /** Any chain adapter implementing PaymentAdapter (Base, Stellar, etc.) */
+  adapter: PaymentAdapter;
 }
 
 /**
@@ -13,21 +14,25 @@ export interface OWSClientOptions {
  *
  * Wraps Axios with an interceptor that automatically detects HTTP 402
  * Payment Required responses, validates the spend against an on-device
- * PolicyEngine, settles the payment on the Stellar network, and retries
- * the original request with a signed X-PAYMENT proof — all without
- * any human interaction.
+ * PolicyEngine, settles the payment on-chain via a pluggable adapter,
+ * and retries the original request with a signed X-PAYMENT proof —
+ * all without any human interaction.
+ *
+ * Chain-agnostic: works with BasePaymentAdapter, StellarPaymentAdapter,
+ * or any future adapter implementing the PaymentAdapter interface.
  *
  * @see https://openwallet.sh for the Open Wallet Standard specification.
+ * @see https://x402.org for the x402 payment protocol.
  * @see https://pay.asgcard.dev for the production ASG Pay infrastructure.
  */
 export class OwsClient {
   public api: AxiosInstance;
   public policyEngine: PolicyEngine;
-  private stellarAdapter: StellarPaymentAdapter;
+  private adapter: PaymentAdapter;
 
   constructor(options: OWSClientOptions) {
     this.policyEngine = new PolicyEngine(options.policy);
-    this.stellarAdapter = options.stellarAdapter;
+    this.adapter = options.adapter;
 
     this.api = axios.create({
       baseURL: options.baseURL,
@@ -55,6 +60,7 @@ export class OwsClient {
           const requestedUsdAmount = match ? parseFloat(match[1]) : 0;
 
           console.log(`[OWS Client] 💰 Requested payment: $${requestedUsdAmount}`);
+          console.log(`[OWS Client] ⛓️  Settlement chain: ${this.adapter.chainName} (${this.adapter.caip2Id})`);
 
           const acceptRules = challenge.accepts[0];
           const { payTo, amount: atomicAmount, network } = acceptRules;
@@ -67,8 +73,8 @@ export class OwsClient {
 
           console.log('[OWS Client] ✅ Policy check PASSED — settling on-chain…');
 
-          // ── Step 2: On-chain settlement (Stellar) ───────────────────
-          const txHash = await this.stellarAdapter.pay(payTo, atomicAmount, network);
+          // ── Step 2: On-chain settlement (chain-agnostic) ────────────
+          const txHash = await this.adapter.pay(payTo, atomicAmount, network);
 
           if (!txHash) {
             console.error('[OWS Client] ❌ Settlement transaction failed');
@@ -92,6 +98,7 @@ export class OwsClient {
             },
             payload: {
               transaction: txHash,
+              chain: this.adapter.caip2Id,
             },
           };
 

@@ -1,3 +1,3 @@
-export * from './client';
-export * from './policy';
-export * from './stellar';
+export { OwsClient, OWSClientOptions } from './client';
+export { PolicyEngine, BudgetPolicy } from './policy';
+export { PaymentAdapter, BasePaymentAdapter, StellarPaymentAdapter } from './adapters';

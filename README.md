@@ -1,293 +1,256 @@
 <div align="center">
 
-# 🤖 OWS Agent Pay
+# 🚀 OWS Agent Pay
 
 ### Autonomous Payment SDK for AI Agents
 
-**OWS-compliant • Policy-gated • Multi-chain settlement • Zero human interaction**
+**OWS-compliant** • **x402 Protocol** • **Multi-chain** • **Policy-gated**
 
-[![OWS Hackathon 2026](https://img.shields.io/badge/OWS-Hackathon%202026-000000?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJ3aGl0ZSI+PHBhdGggZD0iTTEyIDJMNCA3djEwbDggNSA4LTVWN2wtOC01eiIvPjwvc3ZnPg==)](https://hackathon.openwallet.sh)
-[![x402 Protocol](https://img.shields.io/badge/x402-Protocol-FF6B35?style=for-the-badge)](https://x402.org)
-[![NPM Downloads](https://img.shields.io/badge/NPM-100k%2B%2Fmo-CB3837?style=for-the-badge&logo=npm)](https://www.npmjs.com/org/asgcard)
-[![MIT License](https://img.shields.io/badge/License-MIT-22C55E?style=for-the-badge)](./LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![OWS v1.0.0](https://img.shields.io/badge/OWS-v1.0.0-00D4FF)](https://openwallet.sh)
+[![x402](https://img.shields.io/badge/x402-Protocol-FF6B35)](https://x402.org)
+[![Base](https://img.shields.io/badge/Base-0052FF?logo=coinbase&logoColor=white)](https://base.org)
+[![Stellar](https://img.shields.io/badge/Stellar-7C3AED)](https://stellar.org)
+[![Built by ASG Pay](https://img.shields.io/badge/Built_by-ASG_Pay-00FF88)](https://pay.asgcard.dev)
 
-<br/>
+*The AI agent simply calls `performTask()` — the SDK handles payment, policy validation, on-chain settlement, and proof generation transparently.*
 
-**Built by [ASG Pay](https://pay.asgcard.dev)** — Production autonomous payment infrastructure for AI agents
-
-[Live Demo](#-quick-start) · [Architecture](#-architecture) · [ASG Pay Ecosystem](#-production-infrastructure--asg-pay-ecosystem) · [Tracks](#-hackathon-tracks)
+[Documentation](https://pay.asgcard.dev) • [Demo](#-quick-start) • [Architecture](#-architecture) • [OWS Compliance](#-ows-spec-compliance)
 
 </div>
 
 ---
 
-## 🎯 The Problem
+## 💡 What This Solves
 
-AI agents are becoming first-class participants in blockchain ecosystems — executing trades, paying for inference, managing treasuries. But every payment still requires a **human in the loop**. Agents encounter paywalls and stop. That doesn't scale.
+AI agents are rapidly becoming autonomous economic actors, but they have no native way to **pay for services programmatically**. OWS Agent Pay bridges this gap:
 
-> *"Every tool reinvents the wallet. When every tool owns its own keys, nobody owns security."*
-> — [Open Wallet Standard Specification](https://openwallet.sh)
+```
+AI Agent calls API → Server returns HTTP 402 → SDK auto-pays → Agent gets result
+```
 
-## 💡 Our Solution
-
-**OWS Agent Pay** implements the [Open Wallet Standard](https://openwallet.sh) to give AI agents **autonomous payment capability** via the [x402/MPP protocol](https://x402.org). When an agent hits a paid API, the SDK transparently:
-
-| Step | Action | OWS Spec Alignment |
-|------|--------|-------------------|
-| **① Intercept** | Axios catches `HTTP 402 Payment Required` | x402 protocol compliance |
-| **② Evaluate** | On-device Policy Engine checks budget caps, per-tx limits, destination whitelists | [OWS §03 — Policy Engine](https://docs.openwallet.sh/doc.html?slug=03-policy-engine) |
-| **③ Settle** | Executes on-chain payment (Stellar, extensible to all CAIP chains) | [OWS §07 — Supported Chains](https://docs.openwallet.sh/doc.html?slug=07-supported-chains) |
-| **④ Prove** | Constructs signed `X-PAYMENT` token | x402 payment proof format |
-| **⑤ Retry** | Replays original request with proof — agent gets paid content | Transparent to the agent |
-
-**The agent never writes a single line of payment code.**
+**Zero payment code required from the agent developer.** The SDK intercepts, validates, settles, and retries — all transparently.
 
 ---
 
-## 🏗 Architecture
-
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│                          AI Agent                                   │
-│                                                                     │
-│   agent.performTask("/api/inference", { prompt: "..." })            │
-│   // Agent has NO knowledge of payment — just calls an API          │
-└──────────────────────────────┬──────────────────────────────────────┘
-                               │
-                               ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│                     OWS Agent Pay Client                            │
-│                                                                     │
-│  ┌─────────────┐   ┌────────────────────┐   ┌───────────────────┐  │
-│  │   402        │   │   Policy Engine    │   │   Payment         │  │
-│  │   Intercept  │──▶│   (OWS §03)       │──▶│   Adapter         │  │
-│  │              │   │                    │   │                   │  │
-│  │  • Parse OWS │   │  • Per-tx cap     │   │  • Build tx       │  │
-│  │    challenge │   │  • Monthly budget  │   │  • Sign & submit  │  │
-│  │  • Extract   │   │  • Destination     │   │  • Return hash    │  │
-│  │    pricing   │   │    whitelist       │   │                   │  │
-│  │  • Validate  │   │  • Fail-closed     │   │  Stellar (live)   │  │
-│  │    x402      │   │    default         │   │  EVM (roadmap)    │  │
-│  │    version   │   │                    │   │  Solana (roadmap) │  │
-│  └─────────────┘   └────────────────────┘   └───────────────────┘  │
-│                                                                     │
-│  ┌─────────────────────────────────────────────────────────────────┐│
-│  │ Build X-PAYMENT proof (base64)  →  Retry original HTTP request ││
-│  └─────────────────────────────────────────────────────────────────┘│
-└──────────────────────────────────────────────────────────────────────┘
-                               │
-                               ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│              Paid API Endpoint — returns 200 + premium data         │
-└─────────────────────────────────────────────────────────────────────┘
-```
-
----
-
-## 🚀 Quick Start
+## ⚡ Quick Start
 
 ```bash
-# Clone the repository
+# Clone and install
 git clone https://github.com/ASGCompute/ASGCompute-ows-agent-pay.git
 cd ASGCompute-ows-agent-pay
-
-# Install dependencies
 npm install
 
-# Run the live demo (Stellar Testnet — no real money)
-npm run demo
+# Run the Base Sepolia demo (auto-funds from Coinbase faucet)
+npx ts-node demo.ts
 ```
 
-### What the demo does
+### Expected Output
 
 ```
-╔══════════════════════════════════════════════╗
-║   OWS Agent Pay — Autonomous Payment Demo   ║
-║   Built by ASG Pay  •  https://asgcard.dev   ║
-╚══════════════════════════════════════════════╝
-```
+╔══════════════════════════════════════════════════╗
+║   OWS Agent Pay — Base/EVM Autonomous Demo      ║
+║   Built by ASG Pay  •  https://asgcard.dev       ║
+║   x402 Protocol  •  Base (Coinbase L2)           ║
+╚══════════════════════════════════════════════════╝
 
-| Step | Event | Output |
-|------|-------|--------|
-| 1 | Mock API server starts on `:4020` | `[Server] Mock API listening` |
-| 2 | AI agent sends inference request | `[Agent] 🧠 Sending task` |
-| 3 | Server responds **HTTP 402** + OWS challenge | `[OWS Client] ⚡ Received 402` |
-| 4 | Policy Engine evaluates ($0.50 < $1.00 cap) | `[OWS Client] ✅ Policy check PASSED` |
-| 5 | Stellar adapter settles 0.5 XLM on testnet | `[Stellar] ✅ Confirmed — hash: abc…` |
-| 6 | X-PAYMENT token constructed and sent | `[OWS Client] 🔁 Retrying…` |
-| 7 | **Agent receives paid content** 🎉 | `[Agent] ✅ Task completed` |
+[Server] Mock API listening on http://localhost:4020
+[Agent] Wallet: 0xAb5801a7D398991B8a7cF7706226...
+[Agent] Chain:  Base Sepolia (eip155:84532)
+[Agent] 💧 Requesting ETH from Base Sepolia faucet…
+[Agent] ✅ Wallet funded from Coinbase faucet
+[Agent] 💰 Balance: 0.1 ETH
+[Agent] 🧠 Sending inference request…
+
+[OWS Client] ⚡ Received 402 Payment Required challenge
+[OWS Client] 💰 Requested payment: $0.50
+[OWS Client] ⛓️  Settlement chain: Base (eip155:84532)
+[OWS Client] ✅ Policy check PASSED — settling on-chain…
+[Base] 🚀 Building payment → 0xDead71…8B3c4F (0.0005 ETH, Base Sepolia)
+[Base] 📡 Submitting transaction…
+[Base] ✅ Confirmed — hash: 0x9e8f7a6b5c4d3e2f…
+[OWS Client] 🔁 Constructing X-PAYMENT token and retrying…
+
+[AI Agent] ✅ Task completed: The AI model computed the answer...
+
+── 🏁 Demo complete ───────────────────────────
+```
 
 ---
 
-## 📦 Integration
+## 🏗️ Architecture
+
+```
+                            ┌──────────────────┐
+                            │    AI  Agent      │
+                            │  performTask()    │
+                            └────────┬─────────┘
+                                     │ HTTP POST
+                            ┌────────▼─────────┐
+                            │   OwsClient       │
+                            │  (Axios + 402     │
+                            │   interceptor)    │
+                            └─┬──────────────┬──┘
+                              │              │
+               ┌──────────────▼──┐   ┌───────▼───────────┐
+               │  PolicyEngine   │   │  PaymentAdapter    │
+               │  ┌────────────┐ │   │  (interface)       │
+               │  │ Budget     │ │   │                    │
+               │  │ Per-tx max │ │   │  ┌──────────────┐  │
+               │  │ Allowlist  │ │   │  │ Base (viem)  │  │
+               │  └────────────┘ │   │  ├──────────────┤  │
+               └─────────────────┘   │  │ Stellar      │  │
+                                     │  ├──────────────┤  │
+                                     │  │ (Arbitrum…)  │  │
+                                     │  └──────────────┘  │
+                                     └───────────────────┘
+```
+
+| Component | Purpose |
+|-----------|---------|
+| **OwsClient** | Chain-agnostic Axios wrapper with 402 interceptor |
+| **PolicyEngine** | Fail-closed budget, per-tx limits, destination allowlist |
+| **BasePaymentAdapter** | On-chain settlement via Base (Coinbase L2) using viem |
+| **StellarPaymentAdapter** | On-chain settlement via Stellar network |
+| **PaymentAdapter** | Generic interface — plug in any chain |
+
+---
+
+## 📐 OWS Spec Compliance
+
+| OWS Section | Requirement | Implementation |
+|-------------|-------------|----------------|
+| **§03 Intercept** | Detect `402 Payment Required` | Axios response interceptor (`client.ts:46`) |
+| **§04 Evaluate** | Validate `x402Version` + `accepts[]` | Envelope parser + PolicyEngine (`policy.ts`) |
+| **§05 Settle** | Execute on-chain payment | BasePaymentAdapter (viem) / StellarPaymentAdapter |
+| **§06 Prove** | Attach `X-PAYMENT` header | Base64-encoded proof with tx hash + CAIP-2 chain ID |
+| **§07 Retry** | Resubmit original request | Axios re-request with proof header |
+| **§08 Chains** | CAIP-2 chain identifiers | `eip155:8453` (Base), `eip155:84532` (Base Sepolia), `stellar:testnet` |
+
+---
+
+## 🔐 Policy Engine (Fail-Closed)
+
+Every payment **must** pass **all three** checks before execution:
 
 ```typescript
-import { OwsClient, StellarPaymentAdapter } from '@asgcard/ows-agent-pay';
-
-const client = new OwsClient({
-  baseURL: 'https://api.example.com',
-  policy: {
-    monthlyBudget: 50.0,           // $50/month rolling cap
-    maxAmountPerTransaction: 2.0,   // $2 max per single call
-    allowedDestinations: ['G...'],  // optional Stellar address whitelist
-  },
-  stellarAdapter: new StellarPaymentAdapter({
-    secretKey: process.env.AGENT_STELLAR_SECRET!,
-  }),
-});
-
-// The agent calls APIs normally — payments happen transparently
-const result = await client.performTask('/v1/chat/completions', {
-  model: 'gpt-4',
-  messages: [{ role: 'user', content: 'Analyze this market data' }],
-});
+const policy: BudgetPolicy = {
+  monthlyBudget: 50.0,           // USD cap per calendar month
+  maxAmountPerTransaction: 5.0,  // USD cap per single payment
+  allowedDestinations: [         // Whitelist of recipient addresses
+    '0xDead7101a13B2B6e2A4497706226bc3c4F',
+  ],
+};
 ```
 
----
-
-## 🔐 OWS Specification Compliance
-
-Our implementation aligns with the [Open Wallet Standard v1.0.0](https://docs.openwallet.sh/):
-
-| OWS Section | Our Implementation |
-|------------|-------------------|
-| **§03 — Policy Engine** | `PolicyEngine` class with per-tx caps, monthly budget, destination whitelist. Fail-closed by default — if policy check errors, payment is denied. |
-| **§04 — Agent Access** | Agent never sees private keys. `StellarPaymentAdapter` encapsulates all key material. Agent only calls `performTask()`. |
-| **§05 — Key Isolation** | Secret key is held exclusively inside the adapter. No key material is exposed to the HTTP layer or returned to the caller. |
-| **x402 Protocol** | Full support for x402 Version 2 challenge/response. Parses `accepts[]` array, validates scheme/network/amount, constructs base64 `X-PAYMENT` proof. |
-| **CAIP Identifiers** | Architecture is designed for [CAIP-2](https://chainagnostic.org/) chain IDs. Stellar adapter is the first implementation; EVM and Solana adapters are on the roadmap. |
+❌ Over budget → **REJECTED**  
+❌ Over per-tx limit → **REJECTED**  
+❌ Unknown destination → **REJECTED**  
+✅ All checks pass → **SETTLED**
 
 ---
 
-## 🌐 Production Infrastructure — ASG Pay Ecosystem
+## ⛓️ Supported Chains
 
-**This is not a hackathon-only project.** OWS Agent Pay is extracted from the **production ASG Pay stack** — an autonomous payment infrastructure that is already live and serving developers.
+| Chain | Adapter | CAIP-2 | Status |
+|-------|---------|--------|--------|
+| **Base** (Coinbase L2) | `BasePaymentAdapter` | `eip155:8453` | ✅ Live |
+| **Base Sepolia** | `BasePaymentAdapter` | `eip155:84532` | ✅ Testnet |
+| **Stellar** | `StellarPaymentAdapter` | `stellar:pubnet` | ✅ Live |
+| **Arbitrum** | `EvmPaymentAdapter` | `eip155:42161` | 🔜 Next |
+| **Solana** | `SolanaPaymentAdapter` | `solana:mainnet` | 🔜 Planned |
+| **Sui** | `SuiPaymentAdapter` | `sui:mainnet` | 🔜 Planned |
 
-<div align="center">
+> 💡 **Any chain** can be added by implementing the `PaymentAdapter` interface (~40 lines).
 
-### 🏢 ASG Pay — The Full Stack
+---
 
-</div>
+## 🌐 ASG Pay Ecosystem
 
-| Product | URL | What it does |
+OWS Agent Pay is the open-source SDK at the core of the **ASG Pay** production infrastructure:
+
+| Product | URL | Description |
 |---------|-----|-------------|
-| 🌐 **ASG Pay** | [pay.asgcard.dev](https://pay.asgcard.dev) | Marketing & product overview — learn about the platform |
-| 💳 **ASG Fund** | [fund.asgcard.dev](https://fund.asgcard.dev) | Fiat-to-crypto on-ramp — fund agent wallets with credit card |
-| 📦 **NPM Packages** | [@asgcard](https://www.npmjs.com/org/asgcard) | Developer tools — **100,000+ monthly downloads** |
-| 🔧 **x402 Middleware** | Production | HTTP 402 paywall enforcement for Express/Node.js APIs |
-| 💰 **Stripe MPP** | Production | Fiat settlement via Stripe Managed Payouts |
-| ⭐ **Stellar Settlement** | Production | On-chain USDC settlement on Stellar mainnet |
-
-<div align="center">
-
-### Why this matters
-
-> *We didn't build this for a hackathon. We extracted it from production.*
->
-> ASG Pay processes real payments. **100,000+ monthly NPM downloads** prove market traction. This submission packages our battle-tested x402 payment flow into a clean, OWS-compliant SDK that any developer can drop into their AI agent.
-
-</div>
+| **ASG Pay** | [pay.asgcard.dev](https://pay.asgcard.dev) | Landing & developer documentation |
+| **ASG Fund** | [fund.asgcard.dev](https://fund.asgcard.dev) | Payment link generator for AI agent funding |
+| **ASG Card** | [asgcard.dev](https://asgcard.dev) | Virtual card issuing for AI agents |
+| **@asgcard/fund** | [NPM](https://www.npmjs.com/package/@asgcard/fund) | CLI tool for programmatic payment links |
+| **@asgcard/pay** | [NPM](https://www.npmjs.com/package/@asgcard/pay) | Core payment SDK (100K+ downloads) |
 
 ---
 
-## 🏆 Hackathon Tracks
+## 🛣️ Roadmap
 
-### Track 02 — Agent Spend Governance & Identity ✅
-
-Our `PolicyEngine` implements on-device governance that prevents agents from overspending:
-
-- **Per-transaction limits** — cap individual API call costs
-- **Monthly rolling budget** — total spend ceiling across all calls
-- **Destination whitelist** — restrict which addresses the agent can pay
-- **Fail-closed** — any policy error defaults to denial (OWS §03 compliance)
-
-### Track 03 — Pay-Per-Call Services & API Monetization ✅
-
-The `OwsClient` enables seamless pay-per-call monetization:
-
-- **Transparent 402 interception** — developers add our middleware; agents auto-pay
-- **x402 protocol** — standard envelope for pricing, settlement, and proof
-- **Sub-5s settlement** — Stellar transactions confirm in ~4 seconds
-- **Zero integration burden** — agents don't need payment code
+- [x] **OWS-compliant 402 interceptor** with policy engine
+- [x] **Base adapter** (viem, Coinbase L2 — native x402 chain)
+- [x] **Stellar adapter** (production-proven via ASG Pay)
+- [x] **Multi-chain adapter interface** (CAIP-2)
+- [ ] **Arbitrum / OP Stack** adapters
+- [ ] **Solana adapter** (via @solana/web3.js)
+- [ ] **Li.Fi integration** (cross-chain settlement aggregator)
+- [ ] **MCP tool server** (A2A protocol bridge)
+- [ ] **USDC (ERC-20)** transfer support on Base
 
 ---
 
-## 📁 Project Structure
+## 🏆 Hackathon Track Alignment
 
+| Track | Alignment |
+|-------|-----------|
+| **💰 Payments** | Core — x402 autonomous settlement on Base |
+| **🤖 AI Agents** | Core — transparent payment layer for agents |
+| **🔗 Interoperability** | Multi-chain adapters via CAIP-2 |
+| **🏗️ Infrastructure** | Production SDK + ASG Pay ecosystem |
+
+### Sponsor Alignment
+
+- **Base (Coinbase)** — Primary settlement chain, native x402
+- **Circle (USDC)** — Settlement asset on EVM chains
+- **Arbitrum** — EVM adapter roadmap (same `viem` stack)
+- **Stellar** — Production adapter (ASG Pay mainnet)
+- **Li.Fi** — Cross-chain settlement aggregator (roadmap)
+
+---
+
+## 🧑‍💻 Usage in Your Agent
+
+```typescript
+import { OwsClient, BasePaymentAdapter } from 'ows-agent-pay';
+
+const adapter = new BasePaymentAdapter({
+  privateKey: process.env.AGENT_PRIVATE_KEY as `0x${string}`,
+  network: 'mainnet',
+});
+
+const agent = new OwsClient({
+  baseURL: 'https://inference-api.example.com',
+  policy: {
+    monthlyBudget: 100,
+    maxAmountPerTransaction: 5,
+    allowedDestinations: ['0x...'],
+  },
+  adapter, // Swap to StellarPaymentAdapter for Stellar
+});
+
+// Agent code — no payment logic needed!
+const result = await agent.performTask('/v1/chat', {
+  model: 'gpt-4',
+  messages: [{ role: 'user', content: 'Summarize this document' }],
+});
 ```
-ASGCompute-ows-agent-pay/
-├── src/
-│   ├── index.ts        # Barrel exports
-│   ├── client.ts       # OwsClient — Axios + 402 interceptor
-│   ├── policy.ts       # PolicyEngine — budget & whitelist governance
-│   └── stellar.ts      # StellarPaymentAdapter — on-chain settlement
-├── demo.ts             # End-to-end runnable demo
-├── package.json        # Package configuration & scripts
-├── tsconfig.json       # TypeScript configuration
-└── README.md           # You are here
-```
-
----
-
-## 🛠 Tech Stack
-
-| Layer | Technology | Purpose |
-|-------|-----------|---------|
-| Language | TypeScript | Type-safe agent SDK |
-| HTTP Client | Axios | Interceptor pattern for 402 handling |
-| Blockchain | Stellar (via `@stellar/stellar-sdk`) | On-chain settlement |
-| Protocol | [x402](https://x402.org) + [OWS](https://openwallet.sh) | Payment standard |
-| Identity | [CAIP-2](https://chainagnostic.org/) | Chain-agnostic identifiers |
-| Governance | On-device Policy Engine | Budget caps & whitelists |
-
----
-
-## 🗺 Roadmap
-
-| Phase | Status | Description |
-|-------|--------|-------------|
-| Stellar Settlement | ✅ Done | Native XLM + USDC on Stellar |
-| Policy Engine | ✅ Done | Per-tx, monthly, whitelist |
-| x402 Interceptor | ✅ Done | Full V2 challenge/response |
-| EVM Adapter | 🔜 Next | Base, Arbitrum via ethers.js |
-| Solana Adapter | 🔜 Next | SOL + USDC via @solana/web3.js |
-| OWS Core Integration | 🔜 Next | `@open-wallet-standard/core` wallet vault |
-| MCP Tool Exposure | 📋 Planned | `ows_sign` / `ows_pay` MCP tools |
-
----
-
-## 👥 Team — ASG Compute
-
-<div align="center">
-
-**Autonomous Payment Infrastructure for AI Agents**
-
-[🌐 asgcard.dev](https://asgcard.dev) · [💳 fund.asgcard.dev](https://fund.asgcard.dev) · [📦 NPM](https://www.npmjs.com/org/asgcard)
-
-Built on [Stellar](https://stellar.org) · Powered by [x402](https://x402.org) · Aligned with [OWS](https://openwallet.sh)
-
-</div>
-
----
-
-## 🤝 Hackathon Partners
-
-<div align="center">
-
-This project is submitted to the [OWS Hackathon 2026](https://hackathon.openwallet.sh) — proudly supported by:
-
-**Strategic Partners**
-
-[MoonPay](https://moonpay.com) · [Circle](https://circle.com) · [Solana Foundation](https://solana.org) · [Arbitrum](https://arbitrum.io) · [Base](https://base.org) · [Sui](https://sui.io) · [Tron](https://tron.network) · [XRPL](https://xrpl.org)
-
-**Infrastructure Partners**
-
-[XMTP](https://xmtp.org) · [Zerion](https://zerion.io) · [Allium](https://allium.so) · [Dfns](https://dfns.co) · [DFlow](https://dflow.net)
-
-</div>
 
 ---
 
 ## 📄 License
 
-MIT — see [LICENSE](./LICENSE)
+MIT — see [LICENSE](LICENSE) for details.
+
+---
+
+<div align="center">
+
+**Built by [ASG Pay](https://pay.asgcard.dev) • [asgcard.dev](https://asgcard.dev)**
+
+*Autonomous payments for autonomous agents.*
+
+</div>
