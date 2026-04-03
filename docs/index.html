@@ -3,162 +3,222 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>OWS Agent Pay — Interactive x402 Demo</title>
-  <meta name="description" content="Live interactive demo of the OWS Agent Pay SDK — autonomous x402 payments on Base for AI agents.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>">
-  <link rel="stylesheet" href="style.css">
+  <title>OWS Agent Pay — Autonomous x402 Payments for AI Agents</title>
+  <meta name="description" content="Open-source SDK for autonomous AI agent payments. Multi-chain x402 settlement on Base, Stellar & more.">
+  <meta property="og:title" content="OWS Agent Pay — Autonomous x402 Payments for AI Agents">
+  <meta property="og:description" content="Open-source SDK for autonomous AI agent payments. Multi-chain x402 settlement on Base, Stellar & more.">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect rx='20' width='100' height='100' fill='%23a855f7'/><text y='.9em' x='10' font-size='80' fill='white'>A</text></svg>">
+  <link rel="stylesheet" href="shared.css">
+  <link rel="stylesheet" href="index.css">
 </head>
 <body>
-  <!-- ─── Hero Section ─── -->
-  <header class="hero">
-    <div class="hero-bg"></div>
-    <div class="hero-content">
-      <div class="badge">OWS Hackathon 2025 • x402 Protocol</div>
-      <h1>
-        <span class="gradient-text">OWS Agent Pay</span>
-      </h1>
-      <p class="subtitle">Autonomous payment SDK for AI agents — multi-chain x402 settlement on <strong>Base</strong>, Stellar & more</p>
-      <div class="hero-badges">
-        <span class="chain-badge base">Base (Coinbase L2)</span>
-        <span class="chain-badge stellar">Stellar</span>
-        <span class="chain-badge x402">x402 Protocol</span>
-        <span class="chain-badge ows">OWS v1.0</span>
+
+  <!-- ─── Nav ─── -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-brand">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M7 17V7l5 10 5-10v10"/></svg>
+        ASG Pay
+      </a>
+      <div class="nav-links">
+        <a href="#how-it-works">How it Works</a>
+        <a href="#demo">Demo</a>
+        <a href="#protocol">Protocol</a>
+        <a href="ecosystem.html">Ecosystem</a>
+        <a href="ecosystem.html" class="nav-cta">Full Ecosystem Demo</a>
       </div>
+      <div class="nav-social">
+        <a href="https://github.com/ASGCompute/ASGCompute-ows-agent-pay" target="_blank" aria-label="GitHub">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        </a>
+        <a href="https://x.com/ASGCardx402" target="_blank" aria-label="X / Twitter">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ─── Hero ─── -->
+  <header class="hero">
+    <div class="hero-glow"></div>
+    <div class="hero-content">
+      <div class="badge badge-purple">
+        <span class="live-dot"></span>
+        OWS Hackathon 2025 · x402 Protocol
+      </div>
+      <h1>
+        Autonomous Payments<br>for <span class="accent">AI Agents.</span>
+      </h1>
+      <p class="hero-subtitle">
+        Open-source SDK for multi-chain x402 settlement.
+        Your agent calls an API — we handle the payment automatically.
+      </p>
       <div class="hero-actions">
-        <button id="startDemo" class="btn-primary pulse">
-          <span class="btn-icon">▶</span> Run Live Demo
+        <button id="startDemo" class="btn btn-accent">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          Run Live Demo
         </button>
-        <a href="ecosystem.html" class="btn-primary" style="background:linear-gradient(135deg,#7c3aed,#0052FF);text-decoration:none;">
-          <span class="btn-icon">🌐</span> Full Ecosystem Demo
+        <a href="ecosystem.html" class="btn btn-primary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          Full Ecosystem
         </a>
-        <a href="https://github.com/ASGCompute/ASGCompute-ows-agent-pay" target="_blank" class="btn-secondary">
-          <span class="btn-icon">⭐</span> View Source
+        <a href="https://github.com/ASGCompute/ASGCompute-ows-agent-pay" target="_blank" class="btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          View Source
         </a>
+      </div>
+      <div class="quickstart">
+        <span class="quickstart-label">QUICK START</span>
+        <code>npx ts-node demo.ts --simulate</code>
+        <button class="copy-btn" onclick="navigator.clipboard.writeText('npx ts-node demo.ts --simulate')">Copy</button>
       </div>
     </div>
   </header>
 
-  <!-- ─── Architecture Overview ─── -->
-  <section class="architecture">
+  <!-- ─── How It Works ─── -->
+  <section class="section" id="how-it-works">
     <h2>How It Works</h2>
-    <div class="flow-diagram">
-      <div class="flow-step" id="step-agent">
-        <div class="flow-icon">🤖</div>
-        <div class="flow-label">AI Agent</div>
-        <div class="flow-desc">Calls performTask()</div>
+    <p class="section-subtitle">Five steps from API call to paid response — completely autonomous.</p>
+    <div class="stepper reveal">
+      <div class="step" id="step-agent">
+        <div class="step-number">1</div>
+        <div class="step-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="16" height="16" rx="2"/><circle cx="9" cy="10" r="1.5"/><circle cx="15" cy="10" r="1.5"/><path d="M9 15h6"/></svg>
+        </div>
+        <h3>AI Agent</h3>
+        <p>Calls performTask()</p>
       </div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-step" id="step-api">
-        <div class="flow-icon">🌐</div>
-        <div class="flow-label">API Server</div>
-        <div class="flow-desc">Returns HTTP 402</div>
+      <div class="step-connector"></div>
+      <div class="step" id="step-api">
+        <div class="step-number">2</div>
+        <div class="step-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9"/></svg>
+        </div>
+        <h3>API Server</h3>
+        <p>Returns HTTP 402</p>
       </div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-step" id="step-policy">
-        <div class="flow-icon">🛡️</div>
-        <div class="flow-label">Policy Engine</div>
-        <div class="flow-desc">Budget + allowlist</div>
+      <div class="step-connector"></div>
+      <div class="step" id="step-policy">
+        <div class="step-number">3</div>
+        <div class="step-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <h3>Policy Engine</h3>
+        <p>Budget + allowlist</p>
       </div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-step" id="step-settle">
-        <div class="flow-icon">⛓️</div>
-        <div class="flow-label">Base Settlement</div>
-        <div class="flow-desc">On-chain via viem</div>
+      <div class="step-connector"></div>
+      <div class="step" id="step-settle">
+        <div class="step-number">4</div>
+        <div class="step-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        </div>
+        <h3>Settlement</h3>
+        <p>On-chain via Base</p>
       </div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-step" id="step-proof">
-        <div class="flow-icon">✅</div>
-        <div class="flow-label">X-PAYMENT</div>
-        <div class="flow-desc">Proof → 200 OK</div>
+      <div class="step-connector"></div>
+      <div class="step" id="step-proof">
+        <div class="step-number">5</div>
+        <div class="step-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        </div>
+        <h3>X-PAYMENT</h3>
+        <p>Proof → 200 OK</p>
       </div>
     </div>
   </section>
 
-  <!-- ─── Interactive Terminal Demo ─── -->
-  <section class="demo-section" id="demoSection">
+  <!-- ─── Interactive Demo ─── -->
+  <section class="section" id="demo">
     <h2>Interactive Demo</h2>
-    <p class="demo-subtitle">Watch the full x402 payment flow execute in real-time — no blockchain needed</p>
+    <p class="section-subtitle">Watch the full x402 payment flow — no blockchain needed</p>
 
-    <!-- Config Panel -->
-    <div class="config-panel">
-      <h3>⚙️ Agent Configuration</h3>
-      <div class="config-grid">
-        <div class="config-item">
-          <label>Monthly Budget (USD)</label>
-          <input type="number" id="cfgBudget" value="10" min="1" max="1000">
+    <div class="demo-layout reveal">
+      <!-- Config -->
+      <div class="config-panel card">
+        <div class="card-header">
+          <h3>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+            Agent Configuration
+          </h3>
         </div>
-        <div class="config-item">
-          <label>Max Per Transaction (USD)</label>
-          <input type="number" id="cfgMaxTx" value="1" min="0.01" max="100" step="0.01">
-        </div>
-        <div class="config-item">
-          <label>Settlement Chain</label>
-          <select id="cfgChain">
-            <option value="base-sepolia" selected>Base Sepolia (eip155:84532)</option>
-            <option value="base">Base Mainnet (eip155:8453)</option>
-            <option value="stellar-testnet">Stellar Testnet</option>
-          </select>
-        </div>
-        <div class="config-item">
-          <label>API Endpoint</label>
-          <input type="text" id="cfgEndpoint" value="/api/inference" readonly>
+        <div class="card-body">
+          <div class="config-grid">
+            <div class="config-item">
+              <label>Monthly Budget (USD)</label>
+              <input type="number" id="cfgBudget" value="10" min="1" max="1000">
+            </div>
+            <div class="config-item">
+              <label>Max Per Transaction (USD)</label>
+              <input type="number" id="cfgMaxTx" value="1" min="0.01" max="100" step="0.01">
+            </div>
+            <div class="config-item">
+              <label>Settlement Chain</label>
+              <select id="cfgChain">
+                <option value="base-sepolia" selected>Base Sepolia (eip155:84532)</option>
+                <option value="base">Base Mainnet (eip155:8453)</option>
+                <option value="stellar-testnet">Stellar Testnet</option>
+              </select>
+            </div>
+            <div class="config-item">
+              <label>API Endpoint</label>
+              <input type="text" id="cfgEndpoint" value="/api/inference" readonly>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Terminal -->
-    <div class="terminal">
-      <div class="terminal-header">
-        <div class="terminal-dots">
-          <span class="dot red"></span>
-          <span class="dot yellow"></span>
-          <span class="dot green"></span>
+      <!-- Terminal -->
+      <div class="terminal">
+        <div class="terminal-bar">
+          <span class="terminal-dot red"></span>
+          <span class="terminal-dot yellow"></span>
+          <span class="terminal-dot green"></span>
+          <span class="terminal-title">ows-agent-pay — demo.ts</span>
+          <button id="rerunBtn" class="copy-btn" title="Re-run demo">↻ Re-run</button>
         </div>
-        <span class="terminal-title">ows-agent-pay — demo.ts</span>
-        <button id="rerunBtn" class="terminal-btn" title="Re-run demo">⟳</button>
+        <div class="terminal-body" id="terminal">
+          <div class="terminal-line" style="color:var(--text-muted)">Click "Run Live Demo" to start the x402 payment flow…</div>
+        </div>
       </div>
-      <div class="terminal-body" id="terminal">
-        <div class="terminal-line dim">Click "Run Live Demo" to start the x402 payment flow…</div>
-      </div>
-    </div>
 
-    <!-- Stats Panel -->
-    <div class="stats-panel" id="statsPanel">
-      <div class="stat-card">
-        <div class="stat-label">Status</div>
-        <div class="stat-value" id="statStatus">Idle</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Chain</div>
-        <div class="stat-value" id="statChain">—</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Payment</div>
-        <div class="stat-value" id="statPayment">—</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Budget Used</div>
-        <div class="stat-value" id="statBudget">$0 / $10</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Tx Hash</div>
-        <div class="stat-value hash" id="statTxHash">—</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Total Time</div>
-        <div class="stat-value" id="statTime">—</div>
+      <!-- Stats -->
+      <div class="stats-panel" id="statsPanel">
+        <div class="stat-card">
+          <div class="stat-label">Status</div>
+          <div class="stat-value" id="statStatus">Idle</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Chain</div>
+          <div class="stat-value" id="statChain">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Payment</div>
+          <div class="stat-value" id="statPayment">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Budget Used</div>
+          <div class="stat-value" id="statBudget">$0 / $10</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Tx Hash</div>
+          <div class="stat-value hash" id="statTxHash">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Total Time</div>
+          <div class="stat-value" id="statTime">—</div>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- ─── x402 Deep Dive ─── -->
-  <section class="deepdive">
+  <!-- ─── Protocol Deep Dive ─── -->
+  <section class="section" id="protocol">
     <h2>x402 Protocol Flow</h2>
-    <div class="protocol-grid">
-      <div class="protocol-card">
-        <div class="protocol-step">1</div>
+    <p class="section-subtitle">The HTTP-native payment protocol for autonomous agents</p>
+    <div class="protocol-grid reveal">
+      <div class="protocol-card card">
+        <div class="protocol-step-num">1</div>
         <h3>HTTP Request</h3>
         <pre><code>POST /api/inference HTTP/1.1
 Content-Type: application/json
@@ -168,8 +228,8 @@ Content-Type: application/json
   "messages": [...]
 }</code></pre>
       </div>
-      <div class="protocol-card">
-        <div class="protocol-step">2</div>
+      <div class="protocol-card card">
+        <div class="protocol-step-num">2</div>
         <h3>402 Challenge</h3>
         <pre><code>HTTP/1.1 402 Payment Required
 
@@ -184,8 +244,8 @@ Content-Type: application/json
   }]
 }</code></pre>
       </div>
-      <div class="protocol-card">
-        <div class="protocol-step">3</div>
+      <div class="protocol-card card">
+        <div class="protocol-step-num">3</div>
         <h3>On-Chain Settlement</h3>
         <pre><code>// BasePaymentAdapter (viem)
 const hash = await wallet
@@ -195,8 +255,8 @@ const hash = await wallet
     chain: baseSepolia,
   });</code></pre>
       </div>
-      <div class="protocol-card">
-        <div class="protocol-step">4</div>
+      <div class="protocol-card card">
+        <div class="protocol-step-num">4</div>
         <h3>X-PAYMENT Retry</h3>
         <pre><code>POST /api/inference HTTP/1.1
 X-PAYMENT: eyJ4NDAyVmVyc2lvbi...
@@ -210,58 +270,30 @@ X-PAYMENT: eyJ4NDAyVmVyc2lvbi...
     </div>
   </section>
 
-  <!-- ─── Sponsor Alignment ─── -->
-  <section class="sponsors">
-    <h2>Sponsor Alignment</h2>
-    <div class="sponsor-grid">
-      <div class="sponsor-card active">
-        <div class="sponsor-logo">🔵</div>
-        <h3>Base</h3>
-        <p>Primary settlement chain. x402 was built by Coinbase for Base.</p>
-        <span class="sponsor-tag">Native x402</span>
-      </div>
-      <div class="sponsor-card active">
-        <div class="sponsor-logo">⭕</div>
-        <h3>Circle (USDC)</h3>
-        <p>Settlement asset for EVM chains. Native USDC on Base.</p>
-        <span class="sponsor-tag">Settlement Asset</span>
-      </div>
-      <div class="sponsor-card">
-        <div class="sponsor-logo">🟦</div>
-        <h3>Arbitrum</h3>
-        <p>Same viem stack — adapter ready for deployment.</p>
-        <span class="sponsor-tag">EVM Compatible</span>
-      </div>
-      <div class="sponsor-card">
-        <div class="sponsor-logo">⚡</div>
-        <h3>Stellar</h3>
-        <p>Production adapter live via ASG Pay mainnet.</p>
-        <span class="sponsor-tag">Live</span>
-      </div>
-      <div class="sponsor-card">
-        <div class="sponsor-logo">🌉</div>
-        <h3>Li.Fi</h3>
-        <p>Cross-chain settlement aggregator — roadmap integration.</p>
-        <span class="sponsor-tag">Roadmap</span>
-      </div>
-      <div class="sponsor-card">
-        <div class="sponsor-logo">💧</div>
-        <h3>Sui</h3>
-        <p>Move-based adapter planned for multi-chain expansion.</p>
-        <span class="sponsor-tag">Planned</span>
-      </div>
+  <!-- ─── Sponsors ─── -->
+  <section class="section">
+    <h2>Built On & Aligned With</h2>
+    <div class="logo-wall">
+      <span class="logo-wall-item">BASE</span>
+      <span class="logo-wall-item">STELLAR</span>
+      <span class="logo-wall-item">CIRCLE</span>
+      <span class="logo-wall-item">STRIPE</span>
+      <span class="logo-wall-item">ARBITRUM</span>
+      <span class="logo-wall-item">ROZO</span>
+      <span class="logo-wall-item">LI.FI</span>
     </div>
   </section>
 
-  <!-- ─── Try It Yourself ─── -->
-  <section class="try-it">
+  <!-- ─── Quick Start ─── -->
+  <section class="section" id="quickstart">
     <h2>Try It Yourself</h2>
-    <div class="code-block">
-      <div class="code-header">
+    <p class="section-subtitle">Clone, install, and run the demo in under 30 seconds.</p>
+    <div class="code-block quickstart-block reveal">
+      <div class="code-block-header">
         <span>Terminal</span>
-        <button class="copy-btn" onclick="copyCode()">📋 Copy</button>
+        <button class="copy-btn" onclick="copyCode()">Copy</button>
       </div>
-      <pre><code id="installCode">git clone https://github.com/ASGCompute/ASGCompute-ows-agent-pay.git
+      <pre><code id="installCode" style="color:var(--accent-green)">git clone https://github.com/ASGCompute/ASGCompute-ows-agent-pay.git
 cd ASGCompute-ows-agent-pay
 npm install
 npx ts-node demo.ts --simulate</code></pre>
@@ -269,21 +301,55 @@ npx ts-node demo.ts --simulate</code></pre>
   </section>
 
   <!-- ─── Footer ─── -->
-  <footer>
-    <div class="footer-content">
+  <footer class="footer">
+    <div class="footer-inner">
       <div class="footer-brand">
-        <span class="gradient-text">ASG Pay</span>
-        <p>Autonomous payments for autonomous agents</p>
+        <a href="index.html" class="nav-brand" style="margin-bottom:8px">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M7 17V7l5 10 5-10v10"/></svg>
+          ASG Pay
+        </a>
+        <p>Autonomous payments for autonomous agents.<br>Built on Stellar, Base & x402.</p>
       </div>
-      <div class="footer-links">
-        <a href="https://pay.asgcard.dev" target="_blank">pay.asgcard.dev</a>
-        <a href="https://fund.asgcard.dev" target="_blank">fund.asgcard.dev</a>
-        <a href="https://asgcard.dev" target="_blank">asgcard.dev</a>
+      <div class="footer-col">
+        <h4>Products</h4>
+        <a href="https://fund.asgcard.dev" target="_blank">ASG Pay (Fund)</a>
+        <a href="https://asgcard.dev" target="_blank">ASG Card</a>
+        <a href="https://pay.asgcard.dev" target="_blank">Developer Docs</a>
+        <a href="ecosystem.html">Ecosystem Demo</a>
+      </div>
+      <div class="footer-col">
+        <h4>Packages</h4>
+        <a href="https://www.npmjs.com/package/@asgcard/fund" target="_blank">@asgcard/fund</a>
+        <a href="https://www.npmjs.com/package/@asgcard/sdk" target="_blank">@asgcard/sdk</a>
+        <a href="https://www.npmjs.com/package/@asgcard/cli" target="_blank">@asgcard/cli</a>
+      </div>
+      <div class="footer-col">
+        <h4>Community</h4>
         <a href="https://github.com/ASGCompute/ASGCompute-ows-agent-pay" target="_blank">GitHub</a>
+        <a href="https://x.com/ASGCardx402" target="_blank">X (Twitter)</a>
+        <a href="https://t.me/ASGCardbot" target="_blank">Telegram</a>
       </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 ASG Compute. All rights reserved.</span>
+      <span>OWS Hackathon Submission</span>
     </div>
   </footer>
 
   <script src="demo.js"></script>
+  <script>
+    // Intersection Observer for reveal animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    function copyCode() {
+      const code = document.getElementById('installCode').textContent;
+      navigator.clipboard.writeText(code);
+      event.target.textContent = 'Copied!';
+      setTimeout(() => event.target.textContent = 'Copy', 2000);
+    }
+  </script>
 </body>
 </html>

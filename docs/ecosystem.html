@@ -4,88 +4,121 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ASG Pay Ecosystem — Complete Agent Financial Stack</title>
-  <meta name="description" content="Full autonomous agent financial stack: Fund agents, issue virtual cards, and settle payments via x402 on Base & Stellar. Built by ASG Pay." />
+  <meta name="description" content="Full autonomous agent financial stack: Fund agents, issue virtual cards, and settle payments via x402 on Base & Stellar." />
   <meta property="og:title" content="ASG Pay Ecosystem — Complete Agent Financial Stack" />
   <meta property="og:description" content="Fund → Card → Pay: the complete lifecycle of autonomous agent payments." />
   <meta property="og:type" content="website" />
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>" />
-  <link rel="stylesheet" href="ecosystem.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect rx='20' width='100' height='100' fill='%23a855f7'/><text y='.9em' x='10' font-size='80' fill='white'>A</text></svg>" />
+  <link rel="stylesheet" href="shared.css" />
+  <link rel="stylesheet" href="ecosystem-v2.css" />
 </head>
 <body>
 
-  <a href="index.html" class="back-link">← Back to SDK Demo</a>
+  <!-- ─── Nav ─── -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-brand">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M7 17V7l5 10 5-10v10"/></svg>
+        ASG Pay
+      </a>
+      <div class="nav-links">
+        <a href="index.html">SDK Demo</a>
+        <a href="#fund">Fund</a>
+        <a href="#card">Card</a>
+        <a href="#pay">Pay</a>
+        <a href="#products" class="nav-cta">Products</a>
+      </div>
+      <div class="nav-social">
+        <a href="https://github.com/ASGCompute/ASGCompute-ows-agent-pay" target="_blank" aria-label="GitHub">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        </a>
+        <a href="https://x.com/ASGCardx402" target="_blank" aria-label="X / Twitter">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        </a>
+      </div>
+    </div>
+  </nav>
 
-  <!-- ═══ HERO ═══ -->
-  <section class="hero">
-    <div class="hero-badge">🏆 OWS Hackathon 2025 • Production Ecosystem</div>
-    <h1>ASG Pay Ecosystem</h1>
-    <p class="hero-subtitle">
-      The complete autonomous agent financial stack — fund agents, issue virtual cards,
-      and settle payments via <strong>x402</strong> on <strong>Base</strong> &amp; <strong>Stellar</strong>.
-      <em>All products are live in production.</em>
-    </p>
+  <!-- ─── Hero ─── -->
+  <section class="eco-hero">
+    <div class="eco-hero-glow"></div>
+    <div class="eco-hero-content">
+      <div class="badge badge-purple">
+        <span class="live-dot"></span>
+        Production Ecosystem · All Products Live
+      </div>
+      <h1>The Complete Agent<br><span class="accent">Financial Stack.</span></h1>
+      <p class="hero-subtitle">
+        Fund agents, issue virtual cards, and settle payments via <strong>x402</strong> on
+        <strong>Base</strong> & <strong>Stellar</strong>. Three products. One ecosystem.
+      </p>
 
-    <!-- Lifecycle Flow -->
-    <div class="lifecycle">
-      <div class="lifecycle-step active" data-tab="fund">
-        <span class="emoji">💰</span>
-        <span class="label">Fund</span>
-        <span class="sub">fund.asgcard.dev</span>
-      </div>
-      <span class="lifecycle-arrow">→</span>
-      <div class="lifecycle-step" data-tab="card">
-        <span class="emoji">💳</span>
-        <span class="label">Card</span>
-        <span class="sub">asgcard.dev</span>
-      </div>
-      <span class="lifecycle-arrow">→</span>
-      <div class="lifecycle-step" data-tab="pay">
-        <span class="emoji">⚡</span>
-        <span class="label">Pay</span>
-        <span class="sub">x402 on Base</span>
-      </div>
-      <span class="lifecycle-arrow">→</span>
-      <div class="lifecycle-step">
-        <span class="emoji">✅</span>
-        <span class="label">Settled</span>
-        <span class="sub">On-chain</span>
+      <!-- Lifecycle -->
+      <div class="lifecycle">
+        <button class="lifecycle-step active" data-tab="fund">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M2 10h20"/></svg>
+          <span class="lbl">Fund</span>
+          <span class="sub">fund.asgcard.dev</span>
+        </button>
+        <div class="lifecycle-connector"></div>
+        <button class="lifecycle-step" data-tab="card">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20"><rect x="1" y="4" width="22" height="16" rx="2"/><path d="M1 10h22"/></svg>
+          <span class="lbl">Card</span>
+          <span class="sub">asgcard.dev</span>
+        </button>
+        <div class="lifecycle-connector"></div>
+        <button class="lifecycle-step" data-tab="pay">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          <span class="lbl">Pay</span>
+          <span class="sub">x402 on Base</span>
+        </button>
+        <div class="lifecycle-connector"></div>
+        <div class="lifecycle-step settled">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <span class="lbl">Settled</span>
+          <span class="sub">On-chain</span>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- ═══ TABS ═══ -->
-  <section class="tabs">
+  <!-- ─── Tabs ─── -->
+  <section class="eco-tabs">
     <nav class="tab-nav">
       <button class="tab-btn active" data-tab="fund">
-        💰 Fund Agent
-        <span class="badge">LIVE</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M2 10h20"/></svg>
+        Fund Agent
+        <span class="badge badge-green">LIVE</span>
       </button>
       <button class="tab-btn" data-tab="card">
-        💳 Issue Card
-        <span class="badge">LIVE</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16"><rect x="1" y="4" width="22" height="16" rx="2"/><path d="M1 10h22"/></svg>
+        Issue Card
+        <span class="badge badge-green">LIVE</span>
       </button>
       <button class="tab-btn" data-tab="pay">
-        ⚡ x402 Pay
-        <span class="badge">LIVE</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        x402 Pay
+        <span class="badge badge-green">LIVE</span>
       </button>
     </nav>
 
     <!-- ═══ FUND PANEL ═══ -->
     <div class="tab-panel active" id="panel-fund">
       <div class="panel-grid">
-        <!-- Left: Interactive Checkout -->
-        <div class="demo-card">
+        <div class="card">
           <div class="card-header">
             <h3><span class="live-dot"></span> ASG Pay — Agent Checkout</h3>
-            <a href="https://fund.asgcard.dev" target="_blank" class="link">fund.asgcard.dev ↗</a>
+            <a href="https://fund.asgcard.dev" target="_blank" class="header-link">fund.asgcard.dev ↗</a>
           </div>
           <div class="card-body">
             <div class="fund-checkout">
               <div class="agent-profile">
-                <div class="agent-avatar">🤖</div>
+                <div class="agent-avatar">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="22" height="22"><rect x="4" y="4" width="16" height="16" rx="2"/><circle cx="9" cy="10" r="1.5"/><circle cx="15" cy="10" r="1.5"/><path d="M9 15h6"/></svg>
+                </div>
                 <div class="agent-info">
                   <h4>TradeBot Agent</h4>
-                  <p>GDQP2K...YSHWM • Stellar</p>
+                  <p>GDQP2K...YSHWM · Stellar</p>
                 </div>
               </div>
               <div class="fund-amount-display">
@@ -94,30 +127,32 @@
               </div>
               <div class="payment-methods">
                 <div class="payment-method selected" onclick="selectPaymentMethod(this)">
-                  <span class="icon">💳</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="18" height="18"><rect x="1" y="4" width="22" height="16" rx="2"/><path d="M1 10h22"/></svg>
                   <span class="name">Credit Card / Bank</span>
                   <span class="status">via Stripe</span>
                 </div>
                 <div class="payment-method" onclick="selectPaymentMethod(this)">
-                  <span class="icon">🔄</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="18" height="18"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
                   <span class="name">Bridge from EVM</span>
                   <span class="status">via ROZO</span>
                 </div>
                 <div class="payment-method" onclick="selectPaymentMethod(this)">
-                  <span class="icon">📤</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="18" height="18"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
                   <span class="name">Direct Send</span>
                   <span class="status">Freighter</span>
                 </div>
               </div>
-              <button class="btn btn-fund btn-full" id="btn-fund" data-run="fund">▶ Simulate Funding</button>
+              <button class="btn btn-accent btn-full" id="btn-fund" data-run="fund">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                Simulate Funding
+              </button>
               <div class="progress-bar"><div class="progress-fill fund" id="progress-fund"></div></div>
             </div>
           </div>
         </div>
 
-        <!-- Right: Terminal + Code -->
         <div>
-          <div class="demo-card" style="margin-bottom: 16px;">
+          <div class="card" style="margin-bottom:16px;">
             <div class="terminal">
               <div class="terminal-bar">
                 <span class="terminal-dot red"></span>
@@ -126,7 +161,7 @@
                 <span class="terminal-title">fund-flow — demo.ts</span>
               </div>
               <div class="terminal-body" id="terminal-fund">
-                <div class="terminal-line dim">Press "Simulate Funding" to start...</div>
+                <div class="terminal-line" style="color:var(--text-muted)">Press "Simulate Funding" to start...</div>
               </div>
             </div>
           </div>
@@ -149,7 +184,7 @@
           </div>
 
           <div class="result-card success" id="result-fund" style="display:none;">
-            <div class="result-title">✅ Agent Funded</div>
+            <div class="result-title">✓ Agent Funded</div>
             <div class="result-row"><span class="result-label">Amount</span><span class="result-value">50.00 USDC</span></div>
             <div class="result-row"><span class="result-label">Network</span><span class="result-value">Stellar</span></div>
             <div class="result-row"><span class="result-label">Method</span><span class="result-value">Stripe (Visa ••4242)</span></div>
@@ -162,18 +197,18 @@
     <!-- ═══ CARD PANEL ═══ -->
     <div class="tab-panel" id="panel-card">
       <div class="panel-grid">
-        <!-- Left: Virtual Card Display -->
-        <div class="demo-card">
+        <div class="card">
           <div class="card-header">
             <h3><span class="live-dot"></span> ASG Card — Virtual Issuing</h3>
-            <a href="https://asgcard.dev" target="_blank" class="link">asgcard.dev ↗</a>
+            <a href="https://asgcard.dev" target="_blank" class="header-link">asgcard.dev ↗</a>
           </div>
           <div class="card-body">
             <div class="virtual-card" id="virtual-card-display">
+              <div class="vc-shine"></div>
               <div class="card-top">
                 <div>
                   <div class="card-brand">ASG CARD</div>
-                  <div class="card-type">VIRTUAL • SINGLE-USE</div>
+                  <div class="card-type">VIRTUAL · SINGLE-USE</div>
                 </div>
                 <div class="card-mc-logo">
                   <div class="circle"></div>
@@ -213,14 +248,16 @@
               </div>
             </div>
 
-            <button class="btn btn-card btn-full" id="btn-card" data-run="card" style="margin-top: 16px;">▶ Simulate Card Issuance</button>
+            <button class="btn btn-accent btn-full" id="btn-card" data-run="card" style="margin-top:16px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              Simulate Card Issuance
+            </button>
             <div class="progress-bar"><div class="progress-fill card" id="progress-card"></div></div>
           </div>
         </div>
 
-        <!-- Right: Terminal + Code -->
         <div>
-          <div class="demo-card" style="margin-bottom: 16px;">
+          <div class="card" style="margin-bottom:16px;">
             <div class="terminal">
               <div class="terminal-bar">
                 <span class="terminal-dot red"></span>
@@ -229,7 +266,7 @@
                 <span class="terminal-title">card-flow — agent.ts</span>
               </div>
               <div class="terminal-body" id="terminal-card">
-                <div class="terminal-line dim">Press "Simulate Card Issuance" to start...</div>
+                <div class="terminal-line" style="color:var(--text-muted)">Press "Simulate Card Issuance" to start...</div>
               </div>
             </div>
           </div>
@@ -253,10 +290,10 @@
           </div>
 
           <div class="result-card success" id="result-card" style="display:none;">
-            <div class="result-title">✅ Card Used & Destroyed</div>
+            <div class="result-title">✓ Card Used & Destroyed</div>
             <div class="result-row"><span class="result-label">Merchant</span><span class="result-value">serpapi.com</span></div>
             <div class="result-row"><span class="result-label">Amount</span><span class="result-value">$15.00</span></div>
-            <div class="result-row"><span class="result-label">Card Status</span><span class="result-value">🔥 Destroyed</span></div>
+            <div class="result-row"><span class="result-label">Card Status</span><span class="result-value">Destroyed</span></div>
             <div class="result-row"><span class="result-label">Issuer</span><span class="result-value">Stripe Issuing</span></div>
           </div>
         </div>
@@ -266,11 +303,10 @@
     <!-- ═══ PAY PANEL ═══ -->
     <div class="tab-panel" id="panel-pay">
       <div class="panel-grid">
-        <!-- Left: Config + Terminal -->
-        <div class="demo-card">
+        <div class="card">
           <div class="card-header">
             <h3><span class="live-dot"></span> OWS Agent Pay — x402 Flow</h3>
-            <a href="https://github.com/ASGCompute/ASGCompute-ows-agent-pay" target="_blank" class="link">GitHub ↗</a>
+            <a href="https://github.com/ASGCompute/ASGCompute-ows-agent-pay" target="_blank" class="header-link">GitHub ↗</a>
           </div>
           <div class="card-body">
             <div class="terminal">
@@ -281,17 +317,19 @@
                 <span class="terminal-title">ows-agent-pay — x402.ts</span>
               </div>
               <div class="terminal-body" id="terminal-pay">
-                <div class="terminal-line dim">Press "Run x402 Demo" to start...</div>
+                <div class="terminal-line" style="color:var(--text-muted)">Press "Run x402 Demo" to start...</div>
               </div>
             </div>
-            <button class="btn btn-pay btn-full" id="btn-pay" data-run="pay" style="margin-top: 16px;">▶ Run x402 Demo</button>
+            <button class="btn btn-accent btn-full" id="btn-pay" data-run="pay" style="margin-top:16px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              Run x402 Demo
+            </button>
             <div class="progress-bar"><div class="progress-fill pay" id="progress-pay"></div></div>
           </div>
         </div>
 
-        <!-- Right: Code + Result -->
         <div>
-          <div class="code-block" style="margin-bottom: 16px;">
+          <div class="code-block" style="margin-bottom:16px;">
             <div class="code-block-header">
               <span>agent-code.ts</span>
               <span>ows-agent-pay</span>
@@ -321,7 +359,7 @@
           </div>
 
           <div class="result-card success" id="result-pay" style="display:none;">
-            <div class="result-title">✅ x402 Payment Settled</div>
+            <div class="result-title">✓ x402 Payment Settled</div>
             <div class="result-row"><span class="result-label">Protocol</span><span class="result-value">x402 v2</span></div>
             <div class="result-row"><span class="result-label">Amount</span><span class="result-value">$0.50 (0.0005 ETH)</span></div>
             <div class="result-row"><span class="result-label">Chain</span><span class="result-value">Base Sepolia</span></div>
@@ -333,69 +371,131 @@
     </div>
   </section>
 
-  <!-- ═══ ECOSYSTEM LINKS ═══ -->
-  <section class="ecosystem-links">
-    <h2>🌐 Live Production Products</h2>
-    <div class="links-grid">
-      <a href="https://fund.asgcard.dev" target="_blank" class="eco-link">
-        <span class="icon">💰</span>
-        <div class="info">
+  <!-- ─── Products ─── -->
+  <section class="section" id="products">
+    <h2>Live Production Products</h2>
+    <p class="section-subtitle">Every product in the ASG ecosystem is deployed and serving real traffic.</p>
+    <div class="products-grid reveal">
+      <a href="https://fund.asgcard.dev" target="_blank" class="product-card">
+        <div class="product-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="24" height="24"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M2 10h20"/></svg>
+        </div>
+        <div class="product-info">
           <h4>ASG Pay</h4>
-          <p>fund.asgcard.dev • Payment gateway</p>
+          <p>fund.asgcard.dev · Payment gateway</p>
         </div>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="14" height="14" class="arrow"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
       </a>
-      <a href="https://asgcard.dev" target="_blank" class="eco-link">
-        <span class="icon">💳</span>
-        <div class="info">
+      <a href="https://asgcard.dev" target="_blank" class="product-card">
+        <div class="product-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="24" height="24"><rect x="1" y="4" width="22" height="16" rx="2"/><path d="M1 10h22"/></svg>
+        </div>
+        <div class="product-info">
           <h4>ASG Card</h4>
-          <p>asgcard.dev • Virtual card issuing</p>
+          <p>asgcard.dev · Virtual card issuing</p>
         </div>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="14" height="14" class="arrow"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
       </a>
-      <a href="https://pay.asgcard.dev" target="_blank" class="eco-link">
-        <span class="icon">📚</span>
-        <div class="info">
+      <a href="https://pay.asgcard.dev" target="_blank" class="product-card">
+        <div class="product-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="24" height="24"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+        </div>
+        <div class="product-info">
           <h4>Developer Docs</h4>
-          <p>pay.asgcard.dev • SDK documentation</p>
+          <p>pay.asgcard.dev · SDK documentation</p>
         </div>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="14" height="14" class="arrow"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
       </a>
-      <a href="https://www.npmjs.com/package/@asgcard/fund" target="_blank" class="eco-link">
-        <span class="icon">📦</span>
-        <div class="info">
+      <a href="https://www.npmjs.com/package/@asgcard/fund" target="_blank" class="product-card">
+        <div class="product-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="24" height="24"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+        </div>
+        <div class="product-info">
           <h4>@asgcard/fund</h4>
-          <p>NPM • CLI payment link generator</p>
+          <p>NPM · CLI payment link generator</p>
         </div>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="14" height="14" class="arrow"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
       </a>
-      <a href="https://www.npmjs.com/package/@asgcard/sdk" target="_blank" class="eco-link">
-        <span class="icon">🔧</span>
-        <div class="info">
+      <a href="https://www.npmjs.com/package/@asgcard/sdk" target="_blank" class="product-card">
+        <div class="product-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="24" height="24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        </div>
+        <div class="product-info">
           <h4>@asgcard/sdk</h4>
-          <p>NPM • Core SDK (100K+ downloads)</p>
+          <p>NPM · Core SDK (100K+ downloads)</p>
         </div>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="14" height="14" class="arrow"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
       </a>
-      <a href="https://github.com/ASGCompute/ASGCompute-ows-agent-pay" target="_blank" class="eco-link">
-        <span class="icon">⭐</span>
-        <div class="info">
-          <h4>OWS Agent Pay</h4>
-          <p>GitHub • x402 SDK (open-source)</p>
+      <a href="https://github.com/ASGCompute/ASGCompute-ows-agent-pay" target="_blank" class="product-card">
+        <div class="product-icon">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
         </div>
+        <div class="product-info">
+          <h4>OWS Agent Pay</h4>
+          <p>GitHub · x402 SDK (open-source)</p>
+        </div>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="14" height="14" class="arrow"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
       </a>
     </div>
   </section>
 
-  <!-- ═══ SPONSORS ═══ -->
-  <section class="sponsors">
-    <h3>Built on & Aligned with</h3>
-    <div class="sponsor-logos">
-      <span>BASE</span>
-      <span>STELLAR</span>
-      <span>CIRCLE</span>
-      <span>STRIPE</span>
-      <span>ROZO</span>
-      <span>ARBITRUM</span>
-      <span>LI.FI</span>
+  <!-- ─── Sponsors ─── -->
+  <section class="section" style="padding-top:0">
+    <h3 style="text-align:center;font-size:12px;text-transform:uppercase;letter-spacing:2px;color:var(--text-muted);margin-bottom:24px">Built on & Aligned with</h3>
+    <div class="logo-wall">
+      <span class="logo-wall-item">BASE</span>
+      <span class="logo-wall-item">STELLAR</span>
+      <span class="logo-wall-item">CIRCLE</span>
+      <span class="logo-wall-item">STRIPE</span>
+      <span class="logo-wall-item">ROZO</span>
+      <span class="logo-wall-item">ARBITRUM</span>
+      <span class="logo-wall-item">LI.FI</span>
     </div>
   </section>
+
+  <!-- ─── Footer ─── -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <a href="index.html" class="nav-brand" style="margin-bottom:8px">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M7 17V7l5 10 5-10v10"/></svg>
+          ASG Pay
+        </a>
+        <p>Autonomous payments for autonomous agents.<br>Built on Stellar, Base & x402.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Products</h4>
+        <a href="https://fund.asgcard.dev" target="_blank">ASG Pay (Fund)</a>
+        <a href="https://asgcard.dev" target="_blank">ASG Card</a>
+        <a href="https://pay.asgcard.dev" target="_blank">Developer Docs</a>
+        <a href="index.html">SDK Demo</a>
+      </div>
+      <div class="footer-col">
+        <h4>Packages</h4>
+        <a href="https://www.npmjs.com/package/@asgcard/fund" target="_blank">@asgcard/fund</a>
+        <a href="https://www.npmjs.com/package/@asgcard/sdk" target="_blank">@asgcard/sdk</a>
+        <a href="https://www.npmjs.com/package/@asgcard/cli" target="_blank">@asgcard/cli</a>
+      </div>
+      <div class="footer-col">
+        <h4>Community</h4>
+        <a href="https://github.com/ASGCompute/ASGCompute-ows-agent-pay" target="_blank">GitHub</a>
+        <a href="https://x.com/ASGCardx402" target="_blank">X (Twitter)</a>
+        <a href="https://t.me/ASGCardbot" target="_blank">Telegram</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 ASG Compute. All rights reserved.</span>
+      <span>OWS Hackathon Submission</span>
+    </div>
+  </footer>
 
   <script src="ecosystem.js"></script>
+  <script>
+    // Reveal animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
 </body>
 </html>
