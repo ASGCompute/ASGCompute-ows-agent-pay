@@ -15,7 +15,7 @@
   <img src="https://img.shields.io/badge/tests-448_passed-22c55e?style=flat-square" alt="tests" />
   <img src="https://img.shields.io/badge/coverage-84%25-22c55e?style=flat-square" alt="coverage" />
   <img src="https://img.shields.io/badge/networks-15-635bff?style=flat-square" alt="networks" />
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="MIT License" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-blue?style=flat-square" alt="Apache 2.0 License" /></a>
   <img src="https://img.shields.io/badge/TypeScript-strict-3178c6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript" />
 </p>
 

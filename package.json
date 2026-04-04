@@ -58,7 +58,7 @@
     "node": ">=18"
   },
   "author": "ASG Compute <team@asgcard.dev>",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/ASGCompute/ASGCompute-ows-agent-pay"
