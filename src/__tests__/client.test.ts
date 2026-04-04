@@ -204,3 +204,147 @@ describe('OwsClient', () => {
     expect(logs.some((l) => l.includes('402'))).toBe(true);
   });
 });
+
+// ── MPP Protocol Tests ────────────────────────────────────────────────
+
+function createMppMockServer(): http.Server {
+  return http.createServer((req, res) => {
+    if (req.url === '/api/mpp-paid' && req.method === 'POST') {
+      const authHeader = req.headers['authorization'];
+      if (authHeader && authHeader.startsWith('Payment ')) {
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ status: 'success', message: 'MPP paid resource' }));
+        return;
+      }
+
+      // MPP 402 challenge
+      const requestObj = {
+        amount: '50',
+        currency: 'usd',
+        decimals: 2,
+        recipient: '0xMPP_TREASURY',
+      };
+      const requestEncoded = Buffer.from(JSON.stringify(requestObj))
+        .toString('base64')
+        .replace(/\+/g, '-')
+        .replace(/\//g, '_')
+        .replace(/=+$/, '');
+
+      const challenge = `Payment id="ch_123",realm="test.api",method="onchain",intent="payment",request="${requestEncoded}"`;
+
+      res.writeHead(402, {
+        'WWW-Authenticate': challenge,
+        'Content-Type': 'text/plain',
+      });
+      res.end('Payment Required');
+      return;
+    }
+
+    if (req.url === '/api/mpp-expired' && req.method === 'POST') {
+      const requestObj = { amount: '50', currency: 'usd', decimals: 2, recipient: '0xMPP_TREASURY' };
+      const requestEncoded = Buffer.from(JSON.stringify(requestObj))
+        .toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+
+      // Expired challenge
+      const expires = new Date(Date.now() - 60000).toISOString();
+      const challenge = `Payment id="ch_exp",realm="test.api",method="onchain",intent="payment",request="${requestEncoded}",expires="${expires}"`;
+
+      res.writeHead(402, {
+        'WWW-Authenticate': challenge,
+        'Content-Type': 'text/plain',
+      });
+      res.end('Payment Required');
+      return;
+    }
+
+    res.writeHead(404);
+    res.end();
+  });
+}
+
+describe('OwsClient — MPP Protocol', () => {
+  let server: http.Server;
+  let adapter: MockAdapter;
+  let client: OwsClient;
+  let port: number;
+
+  beforeEach(async () => {
+    adapter = new MockAdapter();
+    server = createMppMockServer();
+
+    await new Promise<void>((resolve) => {
+      server.listen(0, () => resolve());
+    });
+
+    const addr = server.address() as any;
+    port = addr.port;
+
+    client = new OwsClient({
+      baseURL: `http://localhost:${port}`,
+      policy: {
+        maxAmountPerTransaction: 1.0,
+        monthlyBudget: 10.0,
+        allowedDestinations: ['0xMPP_TREASURY'],
+      },
+      adapter,
+    });
+  });
+
+  afterEach(() => {
+    server.close();
+  });
+
+  it('intercepts MPP 402 and retries with Authorization: Payment', async () => {
+    const res = await client.performTask('/api/mpp-paid', { query: 'test' });
+    expect(res.status).toBe('success');
+    expect(adapter.payCalledWith).not.toBeNull();
+    expect(adapter.payCalledWith!.amount).toBe('50');
+  });
+
+  it('records spend after MPP settlement', async () => {
+    await client.performTask('/api/mpp-paid', {});
+    expect(client.policyEngine.getSpent()).toBeGreaterThan(0);
+  });
+
+  it('rejects expired MPP challenges', async () => {
+    await expect(client.performTask('/api/mpp-expired', {})).rejects.toThrow();
+  });
+
+  it('uses logger during MPP flow', async () => {
+    const logs: string[] = [];
+    const verboseClient = new OwsClient({
+      baseURL: `http://localhost:${port}`,
+      policy: {
+        maxAmountPerTransaction: 1.0,
+        monthlyBudget: 10.0,
+        allowedDestinations: ['0xMPP_TREASURY'],
+      },
+      adapter,
+      logger: (msg) => logs.push(msg),
+    });
+
+    await verboseClient.performTask('/api/mpp-paid', {});
+    expect(logs.some((l) => l.includes('MPP'))).toBe(true);
+    expect(logs.some((l) => l.includes('Challenge'))).toBe(true);
+  });
+
+  it('rejects when policy blocks MPP payment', async () => {
+    const strictClient = new OwsClient({
+      baseURL: `http://localhost:${port}`,
+      policy: {
+        maxAmountPerTransaction: 0.001,
+        monthlyBudget: 10.0,
+        allowedDestinations: ['0xMPP_TREASURY'],
+      },
+      adapter,
+    });
+
+    await expect(strictClient.performTask('/api/mpp-paid', {})).rejects.toThrow();
+    expect(adapter.payCalledWith).toBeNull();
+  });
+
+  it('rejects when adapter settlement fails during MPP', async () => {
+    adapter.shouldFail = true;
+    await expect(client.performTask('/api/mpp-paid', {})).rejects.toThrow();
+  });
+});

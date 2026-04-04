@@ -2,17 +2,18 @@
   <img src="docs/assets/hero-banner.png" alt="ASG Pay — Payment Infrastructure for AI Agents" width="100%" />
 </p>
 
-<h3 align="center">Give your AI agent a wallet with rules.</h3>
+<h3 align="center">Bi-directional payment infrastructure for AI agents.</h3>
 
 <p align="center">
-  <sub>15 networks · x402 + Stripe MPP · Fail-closed policy engine · Production-ready</sub>
+  <sub>15 networks · Pay Out + Pay In · x402 + MPP · Server-side 402 gating · Real-time monitoring</sub>
 </p>
 
 <p align="center">
   <a href="https://github.com/ASGCompute/ASGCompute-ows-agent-pay/actions/workflows/ci.yml"><img src="https://github.com/ASGCompute/ASGCompute-ows-agent-pay/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
   <a href="https://www.npmjs.com/package/@asgcard/pay"><img src="https://img.shields.io/npm/v/@asgcard/pay?style=flat-square&color=635bff&label=npm" alt="npm version" /></a>
   <a href="https://www.npmjs.com/package/@asgcard/pay"><img src="https://img.shields.io/npm/dm/@asgcard/pay?style=flat-square&color=22c55e&label=downloads" alt="npm downloads" /></a>
-  <img src="https://img.shields.io/badge/tests-148_passed-22c55e?style=flat-square" alt="tests" />
+  <img src="https://img.shields.io/badge/tests-269_passed-22c55e?style=flat-square" alt="tests" />
+  <img src="https://img.shields.io/badge/coverage-84%25-22c55e?style=flat-square" alt="coverage" />
   <img src="https://img.shields.io/badge/networks-15-635bff?style=flat-square" alt="networks" />
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="MIT License" /></a>
   <img src="https://img.shields.io/badge/TypeScript-strict-3178c6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript" />
@@ -33,12 +34,15 @@
 ## 📋 Table of Contents
 
 - [🔥 The Problem](#-the-problem)
-- [⚡ Quick Start](#-quick-start)
+- [⚡ Quick Start — Pay Out](#-quick-start--pay-out)
   - [EVM (Base, Arbitrum, Optimism…)](#evm-base-arbitrum-optimism)
   - [Stellar (XLM / USDC)](#-stellar-xlm--usdc)
   - [Solana (SOL / USDC)](#-solana-sol--usdc)
   - [Stripe MPP (Fiat)](#-stripe-mpp-fiat)
 - [🏗 Architecture](#-architecture)
+- [🔒 Pay In: Server-Side 402 Gating](#-pay-in-server-side-402-gating)
+- [👁 Pay In: Real-Time Payment Monitoring](#-pay-in-real-time-payment-monitoring)
+- [🔗 Pay In: Payment Request URIs](#-pay-in-payment-request-uris)
 - [🌍 Supported Networks (15)](#-supported-networks-15)
 - [🔀 Dual Protocol Support](#-dual-protocol-support)
 - [🛡 Policy Engine](#-policy-engine)
@@ -57,9 +61,14 @@
 
 ## 🔥 The Problem
 
-AI agents are autonomous workers — but they can't pay for anything. When an agent hits `HTTP 402 Payment Required`, it stops dead. No card, no wallet, no way to pay.
+AI agents are autonomous workers — but they can't **pay** for anything, and they can't **earn** anything. When an agent hits `HTTP 402 Payment Required`, it stops dead. When it produces value, there's no way to charge.
 
-**ASG Pay** gives every AI agent a wallet with strict spending rules. The agent just calls `performTask()` — the SDK handles everything:
+**ASG Pay** is bi-directional payment infrastructure:
+
+- **Pay Out** → Agent auto-settles 402 challenges on-chain
+- **Pay In** → Your API returns 402 until the caller pays
+
+The agent just calls `performTask()` — the SDK handles everything:
 
 ```
 Agent → API request → 402 "Pay $0.50" → SDK auto-settles on-chain → Agent gets response
@@ -73,7 +82,7 @@ npm install @asgcard/pay
 
 ---
 
-## ⚡ Quick Start
+## ⚡ Quick Start — Pay Out
 
 ### EVM (Base, Arbitrum, Optimism…)
 
@@ -215,6 +224,114 @@ const agent = new OwsClient({
 
 > **Pluggable**: Add any chain by implementing the [`PaymentAdapter`](src/adapters/types.ts) interface (~40 lines).
 
+#### Pay In Modules (NEW in v0.2.0)
+
+| Component | File | What it does |
+|-----------|------|--------------|
+| **x402Gate** | [`server/x402-gate.ts`](src/server/x402-gate.ts) | Server-side x402 middleware. Returns 402 + JSON challenge, validates `X-PAYMENT` proofs. |
+| **MppGate** | [`server/mpp-gate.ts`](src/server/mpp-gate.ts) | Server-side MPP middleware. Returns 402 + `WWW-Authenticate`, validates credentials. |
+| **PaymentGate** | [`server/payment-gate.ts`](src/server/payment-gate.ts) | Dual-protocol unified gate. Auto-detects x402 vs MPP. |
+| **WebhookHandler** | [`server/webhook.ts`](src/server/webhook.ts) | Stripe webhook with HMAC-SHA256 verification + idempotency. |
+| **EvmWatcher** | [`monitor/evm-watcher.ts`](src/monitor/evm-watcher.ts) | Real-time ERC-20 + native ETH transfer detection via JSON-RPC polling. |
+| **StellarWatcher** | [`monitor/stellar-watcher.ts`](src/monitor/stellar-watcher.ts) | Horizon SSE streaming for incoming Stellar payments. |
+| **SolanaWatcher** | [`monitor/solana-watcher.ts`](src/monitor/solana-watcher.ts) | SOL + SPL token transfer detection via `getSignaturesForAddress`. |
+| **URI Builders** | [`requests/`](src/requests/) | EIP-681, SEP-7, Solana Pay URI generators for QR codes and payment links. |
+
+---
+
+## 🔒 Pay In: Server-Side 402 Gating
+
+Protect any API endpoint behind a paywall. Agents must pay before accessing resources.
+
+```typescript
+import { createPaymentGate } from '@asgcard/pay';
+
+// Dual-protocol gate — supports both x402 and MPP simultaneously
+app.post('/api/premium', createPaymentGate({
+  x402: {
+    payTo: '0xYOUR_WALLET',
+    amount: '500000',       // 0.50 USDC (6 decimals)
+    asset: 'USDC',
+    network: 'eip155:8453', // Base
+  },
+  mpp: {
+    realm: 'api.example.com',
+    method: 'onchain',
+    amount: '0.50',
+    recipient: '0xYOUR_WALLET',
+  },
+}), (req, res) => {
+  res.json({ data: 'premium content' });
+});
+```
+
+**What happens:**
+1. Agent sends request with no payment → gets `402` + challenge (both x402 JSON body + MPP `WWW-Authenticate` header)
+2. Agent pays on-chain (or via Stripe SPT)
+3. Agent retries with proof → middleware validates → `200 OK`
+
+---
+
+## 👁 Pay In: Real-Time Payment Monitoring
+
+Watch for incoming payments across all chains simultaneously:
+
+```typescript
+import { createMultiChainWatcher } from '@asgcard/pay';
+
+const unsub = createMultiChainWatcher({
+  evm: [
+    { address: '0x...', rpcUrl: 'https://mainnet.base.org', chainName: 'Base',
+      usdcContractAddress: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913', onPayment: () => {} },
+  ],
+  stellar: { accountId: 'GABC...', onPayment: () => {} },
+  solana: { address: '7abc...', onPayment: () => {} },
+  onPayment: (event) => {
+    console.log(`💰 ${event.chain}: ${event.amountFormatted} ${event.asset} from ${event.from}`);
+  },
+});
+
+// Stop all watchers
+unsub();
+```
+
+| Chain | Mechanism | Assets |
+|-------|-----------|--------|
+| **EVM (15 chains)** | `eth_getLogs` polling for ERC-20 Transfer events | USDC, ETH/MATIC |
+| **Stellar** | Horizon SSE `/payments` stream | XLM, USDC |
+| **Solana** | `getSignaturesForAddress` + tx parsing | SOL, USDC SPL |
+
+---
+
+## 🔗 Pay In: Payment Request URIs
+
+Generate chain-specific payment URIs for QR codes, deep links, or agent-to-agent requests:
+
+```typescript
+import { buildPaymentUri } from '@asgcard/pay';
+
+// EIP-681 (EVM)
+const evmUri = buildPaymentUri({
+  chain: 'evm',
+  evm: { to: '0x...', amount: '10', asset: '0xUSDC_CONTRACT', decimals: 6, chainId: 8453 },
+});
+// → 'ethereum:0xUSDC_CONTRACT/transfer?address=0x...&uint256=10000000&chainId=8453'
+
+// SEP-7 (Stellar)
+const stellarUri = buildPaymentUri({
+  chain: 'stellar',
+  stellar: { destination: 'GABC...', amount: '100', assetCode: 'USDC', assetIssuer: 'GA5Z...' },
+});
+// → 'web+stellar:pay?destination=GABC...&amount=100&asset_code=USDC&asset_issuer=GA5Z...'
+
+// Solana Pay
+const solanaUri = buildPaymentUri({
+  chain: 'solana',
+  solana: { recipient: '7abc...', amount: '25', splToken: 'EPjFWdd5...' },
+});
+// → 'solana:7abc...?amount=25&spl-token=EPjFWdd5...'
+```
+
 ---
 
 ## 🌍 Supported Networks (15)
@@ -339,7 +456,7 @@ ASG Pay is the core engine powering a suite of **live production products**:
 | **Install** | `npm install @asgcard/pay` |
 | **Networks** | 15 (10 EVM + 2 Stellar + 2 Solana + 1 Stripe) |
 | **Protocols** | x402 (Coinbase) + MPP (Stripe) |
-| **Tests** | 148 tests, 100% CI green |
+| **Tests** | 269 tests, 84% coverage, 100% CI green |
 | **Website** | [pay.asgcard.dev](https://pay.asgcard.dev) |
 
 **Quick demo:**
@@ -349,7 +466,7 @@ ASG Pay is the core engine powering a suite of **live production products**:
 git clone https://github.com/ASGCompute/ASGCompute-ows-agent-pay.git
 cd ASGCompute-ows-agent-pay
 npm install
-npm test          # 143 tests pass (5 Stripe live skipped without key)
+npm test          # 269 tests pass (5 Stripe live skipped without key)
 
 # Try the interactive demo
 npx ts-node demo.ts
@@ -471,11 +588,14 @@ const link = await createFundingLink({
 ## 🧪 Testing
 
 ```bash
-# All 143 unit tests (no secrets needed)
+# All 264 unit tests (no secrets needed)
 npm test
 
-# Full 148 including live Stripe integration
+# Full 269 including live Stripe integration
 STRIPE_SECRET_KEY=sk_live_… npm test
+
+# Coverage report (84% enforced)
+npm run test:coverage
 
 # Type checking
 npm run typecheck
@@ -490,10 +610,22 @@ npm run build && npm pack --dry-run
 | `mpp.test.ts` | 26 | Challenge parsing, credentials, detection |
 | `stripe.test.ts` | 25 | SPT flow, PI creation, server challenges |
 | `policy.test.ts` | 20 | All 4 gates, budget tracking, reset |
+| `stellar.test.ts` | 19 | XLM/USDC, trustline, both networks |
 | `solana.test.ts` | 18 | SOL/USDC, ATA, airdrop protection |
-| `client.test.ts` | 10 | Dual-protocol 402, retry logic |
+| `base.test.ts` | 17 | BasePaymentAdapter full coverage |
+| `client.test.ts` | 16 | Dual-protocol 402, MPP, retry logic |
+| `mpp-gate.test.ts` | 11 | MPP server gate, challenges, credentials |
+| `x402-gate.test.ts` | 10 | x402 server gate, proofs, rejection |
+| `receipt.test.ts` | 7 | Receipt builder/parser |
+| `webhook.test.ts` | 6 | Stripe HMAC, idempotency, routing |
+| `stellar-watcher.test.ts` | 6 | SSE, asset filter, error handling |
+| `evm-watcher.test.ts` | 5 | ERC-20 detection, polling, unsubscribe |
+| `solana-watcher.test.ts` | 5 | SOL transfer, RPC error, cleanup |
+| `multi-watcher.test.ts` | 5 | Multi-chain aggregator, lifecycle |
+| `payment-gate.test.ts` | 4 | Dual-protocol detection, routing |
+| `payment-uri.test.ts` | 22 | EIP-681, SEP-7, Solana Pay, universal |
 | `stripe.integration.test.ts` | 5 | **Live Stripe API** — real PaymentIntents |
-| **Total** | **148** | ✅ |
+| **Total** | **269** | **84.38% coverage** ✅ |
 
 ---
 
@@ -523,7 +655,7 @@ npm run build && npm pack --dry-run
 | **Stripe** | Stripe API `2026-03-04.preview` with native MPP/SPT |
 | **HTTP** | [axios](https://axios-http.com) with interceptor-based 402 handling |
 | **Build** | TypeScript strict mode, dual CJS + ESM output via [tsup](https://tsup.egoist.dev) |
-| **Test** | [Vitest](https://vitest.dev) — 148 tests, CI-ready |
+| **Test** | [Vitest](https://vitest.dev) — 269 tests, 84% coverage, CI-ready |
 | **CI/CD** | [GitHub Actions](https://github.com/ASGCompute/ASGCompute-ows-agent-pay/actions) — Node 18/20/22 matrix |
 
 ---

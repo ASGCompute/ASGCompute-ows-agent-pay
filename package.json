@@ -1,6 +1,6 @@
 {
   "name": "@asgcard/pay",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Production x402/MPP payment SDK for AI agents — autonomous 402 settlement on 15 networks (EVM + Stellar + Solana + Stripe) with fail-closed policy engine.",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
@@ -25,6 +25,7 @@
     "build": "rm -rf dist && npm run build:cjs && npm run build:esm && npm run build:types",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
     "typecheck": "tsc --noEmit",
     "prepublishOnly": "npm run typecheck && npm run test && npm run build",
     "demo": "npx ts-node demo.ts --simulate"
@@ -83,6 +84,7 @@
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
+    "@vitest/coverage-v8": "^3.2.4",
     "ts-node": "^10.9.0",
     "typescript": "^5.7.0",
     "vitest": "^3.1.0"
