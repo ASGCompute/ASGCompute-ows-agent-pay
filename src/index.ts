@@ -50,6 +50,19 @@ export type { SolanaAdapterOptions } from './adapters/solana';
 export { BasePaymentAdapter } from './adapters/base';
 export type { BaseAdapterOptions } from './adapters/base';
 
+// Adapters — OWS (Open Wallet Standard — local key management + policy-gated signing)
+export {
+  createOwsAdapter,
+  createOwsPolicy,
+  createOwsAgentKey,
+  importOwsWallet,
+  importOwsWalletFromKey,
+  exportOwsWallet,
+  listOwsWallets,
+  deleteOwsWallet,
+} from './adapters/ows';
+export type { OwsAdapterOptions } from './adapters/ows';
+
 // Interface
 export type {
   PaymentAdapter,
@@ -110,3 +123,69 @@ export type { Eip681Options } from './requests/eip681';
 export type { Sep7Options } from './requests/sep7';
 export type { SolanaPayOptions } from './requests/solana-pay';
 export type { UniversalPaymentUriOptions } from './requests/universal';
+
+// Wallet — Unified multi-chain wallet abstraction
+export {
+  UnifiedWallet,
+  BalanceAggregator,
+  ChainRouter,
+  IntentResolver,
+  SessionManager,
+} from './wallet';
+export type {
+  UnifiedWalletOptions,
+  UnifiedBalance,
+  ChainBalance,
+  PayIntent,
+  PaymentPlan,
+  PayResult,
+  RoutingStrategy,
+  Session,
+  SessionPermissions,
+  ChainMeta,
+} from './wallet';
+
+// Identity — Agent identity, reputation, and ownership (ERC-8004 + W3C DID)
+export {
+  AgentIdentity,
+  DIDResolver,
+  AgentCard,
+  Reputation,
+  OwnerRegistry,
+} from './identity';
+export type {
+  AgentDID,
+  DIDDocument,
+  VerificationMethod,
+  ServiceEndpoint,
+  AgentCardData,
+  AgentIdentityOptions,
+  ReputationAttestation,
+  ReputationCategory,
+  ReputationProfile,
+  CreateAttestationOptions,
+  OwnerRecord,
+  DelegationLevel,
+  ResolvedIdentity,
+  ResolveOptions,
+} from './identity';
+
+// Facilitator — Revenue engine (hosted payment facilitation)
+export {
+  FacilitatorService,
+  FeeCalculator,
+  PRICING_TIERS,
+  CARD_TIERS,
+} from './facilitator';
+export type {
+  PricingPlan,
+  PricingTier,
+  ApiKeyRecord,
+  FacilitateRequest,
+  FacilitateResponse,
+  FeeBreakdown,
+  UsageRecord,
+  RevenueSummary,
+  CardPlan,
+  CardTier,
+} from './facilitator';

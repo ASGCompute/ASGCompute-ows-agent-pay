@@ -68,6 +68,7 @@
     "url": "https://github.com/ASGCompute/ASGCompute-ows-agent-pay/issues"
   },
   "dependencies": {
+    "@open-wallet-standard/core": "^1.2.4",
     "@solana/spl-token": "^0.4.14",
     "@solana/web3.js": "^1.98.4",
     "@stellar/stellar-sdk": "^13.3.0",
