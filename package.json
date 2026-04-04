@@ -1,7 +1,7 @@
 {
   "name": "@asgcard/pay",
-  "version": "0.1.1",
-  "description": "Production x402/MPP payment SDK for AI agents — autonomous 402 settlement on 12 networks (EVM + Stellar + Stripe) with fail-closed policy engine.",
+  "version": "0.1.2",
+  "description": "Production x402/MPP payment SDK for AI agents — autonomous 402 settlement on 15 networks (EVM + Stellar + Solana + Stripe) with fail-closed policy engine.",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
@@ -43,6 +43,8 @@
     "optimism",
     "polygon",
     "stellar",
+    "solana",
+    "spl-token",
     "usdc",
     "evm",
     "viem",
@@ -65,6 +67,8 @@
     "url": "https://github.com/ASGCompute/ASGCompute-ows-agent-pay/issues"
   },
   "dependencies": {
+    "@solana/spl-token": "^0.4.14",
+    "@solana/web3.js": "^1.98.4",
     "@stellar/stellar-sdk": "^13.3.0",
     "axios": "^1.14.0",
     "viem": "^2.47.6"

@@ -42,6 +42,10 @@ export type { StripeAdapterOptions } from './adapters/stripe';
 export { StellarPaymentAdapter } from './adapters/stellar';
 export type { StellarPaymentAdapterOptions } from './adapters/stellar';
 
+// Adapters — Solana (SOL + USDC SPL, mainnet/devnet/testnet)
+export { SolanaPaymentAdapter } from './adapters/solana';
+export type { SolanaAdapterOptions } from './adapters/solana';
+
 // Adapters — Base (backward compat, use EvmPaymentAdapter instead)
 export { BasePaymentAdapter } from './adapters/base';
 export type { BaseAdapterOptions } from './adapters/base';
