@@ -1,29 +1,59 @@
 {
-  "name": "@asgcard/ows-agent-pay",
-  "version": "1.0.0",
-  "description": "OWS-compliant autonomous payment SDK for AI agents — multi-chain settlement on Base, Stellar, and more. Handles 402 Payment Required challenges, policy-gated budgets, and on-chain settlement via x402 protocol.",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "name": "@asgcard/pay",
+  "version": "0.1.1",
+  "description": "Production x402/MPP payment SDK for AI agents — autonomous 402 settlement on 12 networks (EVM + Stellar + Stripe) with fail-closed policy engine.",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
   "scripts": {
-    "build": "tsc",
-    "demo": "npx ts-node demo.ts",
-    "test": "echo \"See demo script\" && exit 0"
+    "build:cjs": "tsc -p tsconfig.cjs.json",
+    "build:esm": "tsc -p tsconfig.esm.json",
+    "build:types": "tsc -p tsconfig.types.json",
+    "build": "rm -rf dist && npm run build:cjs && npm run build:esm && npm run build:types",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run typecheck && npm run test && npm run build",
+    "demo": "npx ts-node demo.ts --simulate"
   },
   "keywords": [
     "ows",
-    "open-wallet-standard",
+    "x402",
+    "mpp",
+    "stripe",
     "ai-agents",
     "autonomous-payments",
-    "x402",
+    "402-payment-required",
+    "shared-payment-token",
     "base",
+    "arbitrum",
+    "optimism",
+    "polygon",
     "stellar",
+    "usdc",
     "evm",
     "viem",
-    "402-payment-required",
     "machine-to-machine",
     "asg-pay",
-    "coinbase"
+    "coinbase",
+    "circle"
   ],
+  "engines": {
+    "node": ">=18"
+  },
   "author": "ASG Compute <team@asgcard.dev>",
   "license": "MIT",
   "repository": {
@@ -31,16 +61,26 @@
     "url": "https://github.com/ASGCompute/ASGCompute-ows-agent-pay"
   },
   "homepage": "https://pay.asgcard.dev",
+  "bugs": {
+    "url": "https://github.com/ASGCompute/ASGCompute-ows-agent-pay/issues"
+  },
   "dependencies": {
     "@stellar/stellar-sdk": "^13.3.0",
     "axios": "^1.14.0",
     "viem": "^2.47.6"
   },
+  "peerDependencies": {
+    "stripe": ">=16.0.0"
+  },
+  "peerDependenciesMeta": {
+    "stripe": {
+      "optional": true
+    }
+  },
   "devDependencies": {
-    "@types/express": "^5.0.0",
-    "@types/node": "^25.5.0",
-    "express": "^5.1.0",
+    "@types/node": "^22.0.0",
     "ts-node": "^10.9.0",
-    "typescript": "^6.0.2"
+    "typescript": "^5.7.0",
+    "vitest": "^3.1.0"
   }
 }

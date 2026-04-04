@@ -1,22 +1,22 @@
 {
   "compilerOptions": {
     "rootDir": "./src",
-    "outDir": "./dist",
-    "module": "commonjs",
+    "outDir": "./dist/types",
+    "module": "es2022",
+    "moduleResolution": "bundler",
     "target": "es2022",
     "lib": ["es2022", "dom"],
     "types": ["node"],
-    "sourceMap": true,
     "declaration": true,
     "declarationMap": true,
+    "emitDeclarationOnly": true,
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
-    "moduleDetection": "force",
-    "noEmit": true
+    "moduleDetection": "force"
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "demo.ts", "src/__tests__"]
+  "exclude": ["node_modules", "dist", "src/__tests__"]
 }
