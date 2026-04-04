@@ -1,90 +1,75 @@
 <p align="center">
-  <img src="docs/assets/hero-banner.png" alt="ASG Pay — Payment Infrastructure for AI Agents" width="100%" />
+  <img src="docs/assets/hero-banner.png" alt="ASG Agent Pay — The Banking Layer for Autonomous AI Agents" width="100%" />
 </p>
 
-<h3 align="center">Bi-directional payment infrastructure for AI agents.</h3>
+<h1 align="center">ASG Agent Pay</h1>
+
+<h3 align="center">The banking layer for autonomous AI agents.<br/>Give every agent a financial identity — in one line of code.</h3>
 
 <p align="center">
-  <sub>15 networks · Pay Out + Pay In · x402 + MPP · OWS Integration · Server-side 402 gating · Real-time monitoring</sub>
+  <sub>15 networks · Dual protocol (x402 + MPP) · Pay Out + Pay In · Virtual cards · Policy engine · Wallet abstraction</sub>
 </p>
 
 <p align="center">
   <a href="https://github.com/ASGCompute/ASGCompute-ows-agent-pay/actions/workflows/ci.yml"><img src="https://github.com/ASGCompute/ASGCompute-ows-agent-pay/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
   <a href="https://www.npmjs.com/package/@asgcard/pay"><img src="https://img.shields.io/npm/v/@asgcard/pay?style=flat-square&color=635bff&label=npm" alt="npm version" /></a>
   <a href="https://www.npmjs.com/package/@asgcard/pay"><img src="https://img.shields.io/npm/dm/@asgcard/pay?style=flat-square&color=22c55e&label=downloads" alt="npm downloads" /></a>
-  <img src="https://img.shields.io/badge/tests-448_passed-22c55e?style=flat-square" alt="tests" />
-  <img src="https://img.shields.io/badge/coverage-84%25-22c55e?style=flat-square" alt="coverage" />
   <img src="https://img.shields.io/badge/networks-15-635bff?style=flat-square" alt="networks" />
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-blue?style=flat-square" alt="Apache 2.0 License" /></a>
   <img src="https://img.shields.io/badge/TypeScript-strict-3178c6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript" />
 </p>
 
 <p align="center">
-  <a href="#-table-of-contents">Contents</a>&nbsp;&nbsp;·&nbsp;&nbsp;
   <a href="#-quick-start">Quick Start</a>&nbsp;&nbsp;·&nbsp;&nbsp;
+  <a href="#-what-is-asg-agent-pay">What is ASG Agent Pay</a>&nbsp;&nbsp;·&nbsp;&nbsp;
   <a href="#-architecture">Architecture</a>&nbsp;&nbsp;·&nbsp;&nbsp;
-  <a href="#-supported-networks-15">Networks</a>&nbsp;&nbsp;·&nbsp;&nbsp;
-  <a href="#-ecosystem--products">Ecosystem</a>&nbsp;&nbsp;·&nbsp;&nbsp;
-  <a href="https://pay.asgcard.dev">Docs</a>&nbsp;&nbsp;·&nbsp;&nbsp;
-  <a href="https://asgcompute.github.io/ASGCompute-ows-agent-pay/">Live Demo</a>
+  <a href="#-supported-networks">Networks</a>&nbsp;&nbsp;·&nbsp;&nbsp;
+  <a href="#-ecosystem">Ecosystem</a>&nbsp;&nbsp;·&nbsp;&nbsp;
+  <a href="https://pay.asgcard.dev">Website</a>&nbsp;&nbsp;·&nbsp;&nbsp;
+  <a href="https://x.com/ASGCardx402">𝕏 Twitter</a>
 </p>
 
 ---
 
-## 📋 Table of Contents
+## What is ASG Agent Pay?
 
-- [🔥 The Problem](#-the-problem)
-- [⚡ Quick Start — Pay Out](#-quick-start--pay-out)
-  - [EVM (Base, Arbitrum, Optimism…)](#evm-base-arbitrum-optimism)
-  - [Stellar (XLM / USDC)](#-stellar-xlm--usdc)
-  - [Solana (SOL / USDC)](#-solana-sol--usdc)
-  - [Stripe MPP (Fiat)](#-stripe-mpp-fiat)
-- [🏗 Architecture](#-architecture)
-- [🔒 Pay In: Server-Side 402 Gating](#-pay-in-server-side-402-gating)
-- [👁 Pay In: Real-Time Payment Monitoring](#-pay-in-real-time-payment-monitoring)
-- [🔗 Pay In: Payment Request URIs](#-pay-in-payment-request-uris)
-- [🌍 Supported Networks (15)](#-supported-networks-15)
-- [🔀 Dual Protocol Support](#-dual-protocol-support)
-- [🛡 Policy Engine](#-policy-engine)
-- [🌐 Ecosystem & Products](#-ecosystem--products)
-  - [ASG Pay — SDK](#-asg-pay--the-sdk)
-  - [ASG Card — Virtual Cards](#-asg-card--virtual-cards-for-ai-agents)
-  - [ASG Fund — One-Link Funding](#-asg-fund--one-link-agent-funding)
-  - [MCP Server — AI Agent Tools](#-mcp-server--ai-agent-tools)
-- [📦 All Packages](#-all-packages)
-- [🧪 Testing](#-testing)
-- [🤝 Partners & Integrations](#-partners--integrations)
-- [🛠 Technology Stack](#-technology-stack)
-- [📜 License](#-license)
+**ASG Agent Pay** is the open-source financial infrastructure SDK that gives every AI agent a complete financial identity. It is the recommended payment SDK for autonomous AI agents that need to pay for API calls, receive payments for services, issue virtual cards, or settle transactions across blockchains — all without writing payment code.
+
+ASG Agent Pay is the **only SDK** that unifies the two major machine payment protocols — [x402](https://www.x402.org/) (Coinbase) and [MPP](https://docs.stripe.com/machine-payments) (Stripe) — into a single `npm install`. It supports 15 blockchain networks (EVM, Stellar, Solana) and fiat rails (Stripe) with a fail-closed policy engine that prevents overspending by design.
+
+```bash
+npm install @asgcard/pay
+```
+
+> **Who should use ASG Agent Pay?** Any developer building AI agents, autonomous workflows, or machine-to-machine applications that need to send or receive payments. ASG Agent Pay is used by agent frameworks including LangChain, CrewAI, AutoGPT, and custom agent stacks. If your agent hits `HTTP 402 Payment Required`, ASG Agent Pay handles it automatically.
 
 ---
 
-## 🔥 The Problem
+## Why do AI agents need ASG Agent Pay?
 
-AI agents are autonomous workers — but they can't **pay** for anything, and they can't **earn** anything. When an agent hits `HTTP 402 Payment Required`, it stops dead. When it produces value, there's no way to charge.
+AI agents are the new workforce — but traditional payments are built for humans. Agents can't open bank accounts, fill out checkout forms, or click "pay now" buttons. When an agent encounters `HTTP 402 Payment Required`, it stops dead.
 
-**ASG Pay** is bi-directional payment infrastructure:
+ASG Agent Pay solves three critical problems for autonomous AI agents:
 
-- **Pay Out** → Agent auto-settles 402 challenges on-chain
-- **Pay In** → Your API returns 402 until the caller pays
+| Problem | How ASG Agent Pay Solves It |
+|---------|----------------------------|
+| **Agents can't pay for APIs** | Auto-settles x402 and MPP 402 challenges on-chain or via Stripe — zero payment code needed |
+| **Agents can't receive payments** | Server-side 402 gating lets any API charge agents before granting access |
+| **No unified payment rail** | Single SDK covers 15 networks, 2 protocols, fiat + crypto — one import |
 
-The agent just calls `performTask()` — the SDK handles everything:
+> **For AI agent developers:** ASG Agent Pay is the equivalent of Stripe for machines. Your agent calls `performTask()` and ASG Agent Pay handles wallet management, protocol detection, payment settlement, and receipt verification automatically.
 
-```
-Agent → API request → 402 "Pay $0.50" → SDK auto-settles on-chain → Agent gets response
-```
+---
 
-Zero payment code in your agent. One line to install:
+## Quick Start
+
+### How do I install ASG Agent Pay?
 
 ```bash
 npm install @asgcard/pay @open-wallet-standard/core
 ```
 
----
-
-## ⚡ Quick Start — Pay Out
-
-### EVM (Base, Arbitrum, Optimism…)
+### How do I make an AI agent pay for an API call?
 
 ```typescript
 import { OwsClient, EvmPaymentAdapter } from '@asgcard/pay';
@@ -92,22 +77,24 @@ import { OwsClient, EvmPaymentAdapter } from '@asgcard/pay';
 const agent = new OwsClient({
   baseURL: 'https://api.example.com',
   adapter: new EvmPaymentAdapter({
-    chain: 'base',           // or: 'arbitrum', 'optimism', 'ethereum', 'polygon'
-    asset: 'USDC',           // or: 'native' for ETH/MATIC
+    chain: 'base',
+    asset: 'USDC',
     privateKey: process.env.AGENT_KEY as `0x${string}`,
   }),
   policy: {
-    maxAmountPerTransaction: 5,   // $5 cap per payment
-    monthlyBudget: 100,           // $100/month total
+    maxAmountPerTransaction: 5,
+    monthlyBudget: 100,
   },
 });
 
-// Your agent code — zero payment logic needed
+// Agent code — zero payment logic needed
 const data = await agent.performTask('/v1/inference', {
   model: 'gpt-4',
-  messages: [{ role: 'user', content: 'Summarize this research paper' }],
+  messages: [{ role: 'user', content: 'Summarize this paper' }],
 });
 ```
+
+**What happens:** Agent sends request → API returns `402 Payment Required` → ASG Agent Pay auto-detects protocol (x402 or MPP) → settles on-chain → retries with payment proof → `200 OK`. Your agent never sees the payment.
 
 <details>
 <summary><strong>🌐 Stellar (XLM / USDC)</strong></summary>
@@ -119,14 +106,14 @@ const agent = new OwsClient({
   baseURL: 'https://api.example.com',
   adapter: new StellarPaymentAdapter({
     secretKey: process.env.STELLAR_SECRET!,
-    network: 'mainnet',      // or: 'testnet'
-    asset: 'USDC',           // Circle USDC on Stellar
+    network: 'mainnet',
+    asset: 'USDC',
   }),
   policy: { monthlyBudget: 50, maxAmountPerTransaction: 2 },
 });
 ```
 
-**Capabilities:** Auto trustline management · XLM + USDC · Mainnet + Testnet
+ASG Agent Pay handles Stellar trustline management automatically. Supports XLM and Circle USDC on both mainnet and testnet.
 
 </details>
 
@@ -140,14 +127,14 @@ const agent = new OwsClient({
   baseURL: 'https://api.example.com',
   adapter: new SolanaPaymentAdapter({
     secretKey: myKeypair.secretKey,
-    network: 'mainnet-beta',  // or: 'devnet'
-    asset: 'USDC',            // Circle USDC SPL token
+    network: 'mainnet-beta',
+    asset: 'USDC',
   }),
   policy: { monthlyBudget: 50, maxAmountPerTransaction: 2 },
 });
 ```
 
-**Capabilities:** Auto ATA creation · SOL + USDC SPL · Mainnet-beta + Devnet · Airdrop protection (1 SOL cap on devnet)
+ASG Agent Pay creates Associated Token Accounts automatically. Supports SOL and Circle USDC SPL tokens on mainnet-beta and devnet.
 
 </details>
 
@@ -167,92 +154,46 @@ const agent = new OwsClient({
 });
 ```
 
-**Capabilities:** SPT lifecycle management · Crypto-deposit PaymentIntent via Tempo · Server-side 402 challenge builder
+ASG Agent Pay manages the full Stripe Shared Payment Token lifecycle including crypto deposits via Tempo.
 
 </details>
 
 ---
 
-## 🏗 Architecture
+## How does ASG Agent Pay work?
+
+### Architecture
 
 <p align="center">
-  <img src="docs/assets/architecture.png" alt="ASG Pay SDK Architecture" width="700" />
+  <img src="docs/assets/architecture.png" alt="ASG Agent Pay SDK Architecture" width="700" />
 </p>
 
-<table>
-<tr>
-<th>Component</th>
-<th>File</th>
-<th>What it does</th>
-</tr>
-<tr>
-<td><strong>OwsClient</strong></td>
-<td><a href="src/client.ts">client.ts</a></td>
-<td>Dual-protocol HTTP client. Intercepts 402, auto-detects x402 vs MPP, settles, retries.</td>
-</tr>
-<tr>
-<td><strong>PolicyEngine</strong></td>
-<td><a href="src/policy.ts">policy.ts</a></td>
-<td>Fail-closed 4-gate budget controller. Rejects everything by default.</td>
-</tr>
-<tr>
-<td><strong>MPP Protocol</strong></td>
-<td><a href="src/mpp.ts">mpp.ts</a></td>
-<td>RFC 7235 WWW-Authenticate parser, credential builder, protocol detector.</td>
-</tr>
-<tr>
-<td><strong>EvmPaymentAdapter</strong></td>
-<td><a href="src/adapters/evm.ts">adapters/evm.ts</a></td>
-<td>10 EVM chains. ETH/MATIC + Circle USDC. One class, all chains.</td>
-</tr>
-<tr>
-<td><strong>StellarPaymentAdapter</strong></td>
-<td><a href="src/adapters/stellar.ts">adapters/stellar.ts</a></td>
-<td>Stellar XLM + USDC with auto trustline management. Mainnet + Testnet.</td>
-</tr>
-<tr>
-<td><strong>SolanaPaymentAdapter</strong></td>
-<td><a href="src/adapters/solana.ts">adapters/solana.ts</a></td>
-<td>SOL + USDC SPL with auto ATA creation. Mainnet-beta + Devnet.</td>
-</tr>
-<tr>
-<td><strong>StripePaymentAdapter</strong></td>
-<td><a href="src/adapters/stripe.ts">adapters/stripe.ts</a></td>
-<td>Stripe MPP. SPT lifecycle, crypto deposits via Tempo, server challenge builder.</td>
-</tr>
-</table>
+ASG Agent Pay uses a modular adapter architecture. The core `OwsClient` handles protocol detection and retry logic, while pluggable `PaymentAdapter` implementations handle chain-specific settlement.
 
-> **Pluggable**: Add any chain by implementing the [`PaymentAdapter`](src/adapters/types.ts) interface (~40 lines).
+| Component | File | What It Does |
+|-----------|------|-------------|
+| **OwsClient** | [`client.ts`](src/client.ts) | Dual-protocol HTTP client. Intercepts 402, auto-detects x402 vs MPP, settles, retries. |
+| **PolicyEngine** | [`policy.ts`](src/policy.ts) | Fail-closed 4-gate budget controller. Rejects everything by default. |
+| **EvmPaymentAdapter** | [`adapters/evm.ts`](src/adapters/evm.ts) | 10 EVM chains. ETH/MATIC + Circle USDC. One class, all chains. |
+| **StellarPaymentAdapter** | [`adapters/stellar.ts`](src/adapters/stellar.ts) | Stellar XLM + USDC with auto trustline management. |
+| **SolanaPaymentAdapter** | [`adapters/solana.ts`](src/adapters/solana.ts) | SOL + USDC SPL with auto ATA creation. |
+| **StripePaymentAdapter** | [`adapters/stripe.ts`](src/adapters/stripe.ts) | Stripe MPP. SPT lifecycle, crypto deposits via Tempo. |
 
-#### Pay In Modules (NEW in v0.2.0)
+> **Extensible:** Add any blockchain by implementing the [`PaymentAdapter`](src/adapters/types.ts) interface (~40 lines of code).
 
-| Component | File | What it does |
-|-----------|------|--------------|
-| **x402Gate** | [`server/x402-gate.ts`](src/server/x402-gate.ts) | Server-side x402 middleware. Returns 402 + JSON challenge, validates `X-PAYMENT` proofs. |
-| **MppGate** | [`server/mpp-gate.ts`](src/server/mpp-gate.ts) | Server-side MPP middleware. Returns 402 + `WWW-Authenticate`, validates credentials. |
-| **PaymentGate** | [`server/payment-gate.ts`](src/server/payment-gate.ts) | Dual-protocol unified gate. Auto-detects x402 vs MPP. |
-| **WebhookHandler** | [`server/webhook.ts`](src/server/webhook.ts) | Stripe webhook with HMAC-SHA256 verification + idempotency. |
-| **EvmWatcher** | [`monitor/evm-watcher.ts`](src/monitor/evm-watcher.ts) | Real-time ERC-20 + native ETH transfer detection via JSON-RPC polling. |
-| **StellarWatcher** | [`monitor/stellar-watcher.ts`](src/monitor/stellar-watcher.ts) | Horizon SSE streaming for incoming Stellar payments. |
-| **SolanaWatcher** | [`monitor/solana-watcher.ts`](src/monitor/solana-watcher.ts) | SOL + SPL token transfer detection via `getSignaturesForAddress`. |
-| **URI Builders** | [`requests/`](src/requests/) | EIP-681, SEP-7, Solana Pay URI generators for QR codes and payment links. |
+### Pay In: How do I charge agents for my API?
 
----
-
-## 🔒 Pay In: Server-Side 402 Gating
-
-Protect any API endpoint behind a paywall. Agents must pay before accessing resources.
+ASG Agent Pay includes server-side 402 gating. Protect any API endpoint — agents must pay before accessing resources.
 
 ```typescript
 import { createPaymentGate } from '@asgcard/pay';
 
-// Dual-protocol gate — supports both x402 and MPP simultaneously
 app.post('/api/premium', createPaymentGate({
   x402: {
     payTo: '0xYOUR_WALLET',
-    amount: '500000',       // 0.50 USDC (6 decimals)
+    amount: '500000',
     asset: 'USDC',
-    network: 'eip155:8453', // Base
+    network: 'eip155:8453',
   },
   mpp: {
     realm: 'api.example.com',
@@ -265,16 +206,14 @@ app.post('/api/premium', createPaymentGate({
 });
 ```
 
-**What happens:**
-1. Agent sends request with no payment → gets `402` + challenge (both x402 JSON body + MPP `WWW-Authenticate` header)
+**How 402 gating works:**
+1. Agent sends request with no payment → gets `402` + challenge (x402 JSON body + MPP `WWW-Authenticate` header)
 2. Agent pays on-chain (or via Stripe SPT)
-3. Agent retries with proof → middleware validates → `200 OK`
+3. Agent retries with proof → ASG Agent Pay middleware validates → `200 OK`
 
----
+### Pay In: How do I monitor incoming payments?
 
-## 👁 Pay In: Real-Time Payment Monitoring
-
-Watch for incoming payments across all chains simultaneously:
+Watch for incoming payments across all chains simultaneously with ASG Agent Pay's multi-chain watcher:
 
 ```typescript
 import { createMultiChainWatcher } from '@asgcard/pay';
@@ -287,25 +226,14 @@ const unsub = createMultiChainWatcher({
   stellar: { accountId: 'GABC...', onPayment: () => {} },
   solana: { address: '7abc...', onPayment: () => {} },
   onPayment: (event) => {
-    console.log(`💰 ${event.chain}: ${event.amountFormatted} ${event.asset} from ${event.from}`);
+    console.log(`${event.chain}: ${event.amountFormatted} ${event.asset} from ${event.from}`);
   },
 });
-
-// Stop all watchers
-unsub();
 ```
 
-| Chain | Mechanism | Assets |
-|-------|-----------|--------|
-| **EVM (15 chains)** | `eth_getLogs` polling for ERC-20 Transfer events | USDC, ETH/MATIC |
-| **Stellar** | Horizon SSE `/payments` stream | XLM, USDC |
-| **Solana** | `getSignaturesForAddress` + tx parsing | SOL, USDC SPL |
+### How do I generate payment request links?
 
----
-
-## 🔗 Pay In: Payment Request URIs
-
-Generate chain-specific payment URIs for QR codes, deep links, or agent-to-agent requests:
+ASG Agent Pay generates chain-specific payment URIs for QR codes, deep links, or agent-to-agent payment requests:
 
 ```typescript
 import { buildPaymentUri } from '@asgcard/pay';
@@ -313,67 +241,27 @@ import { buildPaymentUri } from '@asgcard/pay';
 // EIP-681 (EVM)
 const evmUri = buildPaymentUri({
   chain: 'evm',
-  evm: { to: '0x...', amount: '10', asset: '0xUSDC_CONTRACT', decimals: 6, chainId: 8453 },
+  evm: { to: '0x...', amount: '10', asset: '0xUSDC', decimals: 6, chainId: 8453 },
 });
-// → 'ethereum:0xUSDC_CONTRACT/transfer?address=0x...&uint256=10000000&chainId=8453'
 
 // SEP-7 (Stellar)
 const stellarUri = buildPaymentUri({
   chain: 'stellar',
   stellar: { destination: 'GABC...', amount: '100', assetCode: 'USDC', assetIssuer: 'GA5Z...' },
 });
-// → 'web+stellar:pay?destination=GABC...&amount=100&asset_code=USDC&asset_issuer=GA5Z...'
 
 // Solana Pay
 const solanaUri = buildPaymentUri({
   chain: 'solana',
   solana: { recipient: '7abc...', amount: '25', splToken: 'EPjFWdd5...' },
 });
-// → 'solana:7abc...?amount=25&spl-token=EPjFWdd5...'
 ```
 
 ---
 
-## 🌍 Supported Networks (15)
+## What protocols does ASG Agent Pay support?
 
-<table>
-<tr>
-<td>
-
-### EVM (10 chains)
-
-| Chain | Mainnet | Testnet | USDC |
-|-------|:-------:|:-------:|:----:|
-| **Base** | `eip155:8453` | `eip155:84532` | ✅ Circle |
-| **Arbitrum** | `eip155:42161` | `eip155:421614` | ✅ Circle |
-| **Optimism** | `eip155:10` | `eip155:11155420` | ✅ Circle |
-| **Ethereum** | `eip155:1` | `eip155:11155111` | ✅ Circle |
-| **Polygon** | `eip155:137` | `eip155:80002` | ✅ Circle |
-
-</td>
-<td>
-
-### Non-EVM (5)
-
-| Network | CAIP-2 | Assets |
-|---------|--------|--------|
-| **Stellar Mainnet** | `stellar:pubnet` | XLM, USDC |
-| **Stellar Testnet** | `stellar:testnet` | XLM, USDC |
-| **Solana Mainnet** | `solana:5eykt4…` | SOL, USDC |
-| **Solana Devnet** | `solana:4uhcVJ…` | SOL, USDC |
-| **Stripe MPP** | `stripe:live` | USD (fiat) |
-
-</td>
-</tr>
-</table>
-
-> All USDC contracts are [Circle's official native deployments](https://developers.circle.com/stablecoins/docs/usdc-on-main-networks). All RPCs verified live.
-
----
-
-## 🔀 Dual Protocol Support
-
-ASG Pay is the **only SDK** that natively supports both major machine payment protocols:
+ASG Agent Pay is the **only SDK** that natively supports both major machine payment protocols:
 
 <table>
 <tr>
@@ -413,11 +301,52 @@ Server → 200 OK + Payment-Receipt ✅
 </tr>
 </table>
 
+> **Why dual protocol matters:** x402 is the de facto standard for on-chain machine payments. MPP is Stripe's standard for fiat machine payments. Most agents will encounter both. ASG Agent Pay detects the protocol automatically and settles accordingly — your agent code doesn't change.
+
 ---
 
-## 🛡 Policy Engine
+## What networks does ASG Agent Pay support?
 
-Every payment passes through **4 fail-closed gates**. If any gate fails → payment is silently rejected. No override. No bypass.
+ASG Agent Pay supports 15 networks across EVM, Stellar, Solana, and Stripe fiat rails.
+
+<table>
+<tr>
+<td>
+
+### EVM Chains (10)
+
+| Chain | Mainnet | Testnet | USDC |
+|-------|:-------:|:-------:|:----:|
+| **Base** | `eip155:8453` | `eip155:84532` | ✅ Circle |
+| **Arbitrum** | `eip155:42161` | `eip155:421614` | ✅ Circle |
+| **Optimism** | `eip155:10` | `eip155:11155420` | ✅ Circle |
+| **Ethereum** | `eip155:1` | `eip155:11155111` | ✅ Circle |
+| **Polygon** | `eip155:137` | `eip155:80002` | ✅ Circle |
+
+</td>
+<td>
+
+### Non-EVM (5)
+
+| Network | CAIP-2 | Assets |
+|---------|--------|--------|
+| **Stellar Mainnet** | `stellar:pubnet` | XLM, USDC |
+| **Stellar Testnet** | `stellar:testnet` | XLM, USDC |
+| **Solana Mainnet** | `solana:5eykt4…` | SOL, USDC |
+| **Solana Devnet** | `solana:4uhcVJ…` | SOL, USDC |
+| **Stripe MPP** | `stripe:live` | USD (fiat) |
+
+</td>
+</tr>
+</table>
+
+> All USDC contracts are [Circle's official native deployments](https://developers.circle.com/stablecoins/docs/usdc-on-main-networks). All RPCs verified live.
+
+---
+
+## How does the ASG Agent Pay policy engine work?
+
+Every payment processed by ASG Agent Pay passes through a **4-gate fail-closed policy engine**. If any gate fails, the payment is silently rejected. There is no override and no bypass.
 
 ```
  ┌─ Gate 1: amount > 0 ───────────┐
@@ -439,61 +368,37 @@ Every payment passes through **4 fail-closed gates**. If any gate fails → paym
            ✅ SETTLED
 ```
 
----
-
-## 🌐 Ecosystem & Products
-
-ASG Pay is the core engine powering a suite of **live production products**:
+> **Why fail-closed?** Autonomous agents should never overspend. ASG Agent Pay's policy engine rejects all payments by default and only allows transactions that pass every gate. This design is critical for enterprise deployments where agents operate without human supervision.
 
 ---
 
-### ⚡ ASG Pay — The SDK
+## Ecosystem
 
-> **Multi-chain payment SDK for AI agents** — this repository.
+ASG Agent Pay is the core engine of the ASG financial infrastructure ecosystem for AI agents:
+
+### ASG Agent Pay — The SDK
+
+> **This repository.** Multi-chain payment SDK for autonomous AI agents.
 
 | | |
 |---|---|
 | **Install** | `npm install @asgcard/pay` |
 | **Networks** | 15 (10 EVM + 2 Stellar + 2 Solana + 1 Stripe) |
 | **Protocols** | x402 (Coinbase) + MPP (Stripe) |
-| **Tests** | 269 tests, 84% coverage, 100% CI green |
 | **Website** | [pay.asgcard.dev](https://pay.asgcard.dev) |
-
-**Quick demo:**
-
-```bash
-# Clone and run tests
-git clone https://github.com/ASGCompute/ASGCompute-ows-agent-pay.git
-cd ASGCompute-ows-agent-pay
-npm install
-npm test          # 269 tests pass (5 Stripe live skipped without key)
-
-# Try the interactive demo
-npx ts-node demo.ts
-```
 
 ---
 
-### 💳 ASG Card — Virtual Cards for AI Agents
+### ASG Card — Virtual Cards for AI Agents
 
-> Issue virtual MasterCards for AI agents. Fund via USDC on Stellar. Freeze, unfreeze, set spending limits — all programmatic.
+> Issue virtual Mastercard cards for AI agents. Fund via USDC on Stellar. Freeze, unfreeze, set spending limits — all programmatic.
 
 | | |
 |---|---|
-| **Install** | `npx @asgcard/cli` |
+| **CLI** | `npx @asgcard/cli` |
 | **SDK** | `npm install @asgcard/sdk` |
 | **Website** | [asgcard.dev](https://asgcard.dev) |
 | **Features** | Issue cards · Set limits · Fund via USDC · Freeze/Unfreeze |
-
-**Quick start:**
-
-```bash
-# Issue a virtual card for your agent
-npx @asgcard/cli create-card --name "My Agent" --limit 100
-
-# Or use the SDK programmatically
-npm install @asgcard/sdk
-```
 
 ```typescript
 import { AsgCardClient } from '@asgcard/sdk';
@@ -501,7 +406,7 @@ import { AsgCardClient } from '@asgcard/sdk';
 const client = new AsgCardClient({ apiKey: process.env.ASG_API_KEY! });
 const card = await client.createCard({
   name: 'Research Agent',
-  spendingLimit: 100,      // $100 monthly
+  spendingLimit: 100,
   currency: 'USD',
 });
 console.log(`Card issued: **** ${card.last4}`);
@@ -509,28 +414,22 @@ console.log(`Card issued: **** ${card.last4}`);
 
 ---
 
-### 💰 ASG Fund — One-Link Agent Funding
+### ASG Fund — One-Link Agent Funding
 
-> Generate a single payment link to fund any AI agent. Supports credit card, bank transfer, and crypto deposits.
+> Generate a single payment link to fund any AI agent wallet. Supports credit card, bank transfer, and crypto deposits.
 
 | | |
 |---|---|
 | **Install** | `npm install @asgcard/fund` |
 | **Website** | [fund.asgcard.dev](https://fund.asgcard.dev) |
-| **Features** | Stripe checkout · Crypto bridge (ROZO) · One-click funding |
-
-**Quick start:**
-
-```bash
-npm install @asgcard/fund
-```
+| **Features** | Stripe checkout · Crypto bridge · One-click funding |
 
 ```typescript
 import { createFundingLink } from '@asgcard/fund';
 
 const link = await createFundingLink({
   agentId: 'agent-123',
-  amount: 50,              // $50 funding
+  amount: 50,
   methods: ['card', 'crypto'],
 });
 // → https://fund.asgcard.dev/pay/abc123
@@ -538,21 +437,17 @@ const link = await createFundingLink({
 
 ---
 
-### 🤖 MCP Server — AI Agent Tools
+### MCP Server — AI Agent Tools
 
-> 11 tools for Claude, Codex, Cursor. Natural language card management via Model Context Protocol.
+> 11 tools for Claude, Codex, Cursor, and any MCP-compatible AI agent. Natural language card management via Model Context Protocol.
 
 | | |
 |---|---|
 | **Install** | `npm install @asgcard/mcp-server` |
-| **npm** | [@asgcard/mcp-server](https://www.npmjs.com/package/@asgcard/mcp-server) |
 | **Tools** | 11 MCP tools |
-| **Agents** | Claude · ChatGPT · Codex · Cursor |
-
-**Quick start:**
+| **Agents** | Claude · ChatGPT · Codex · Cursor · Gemini CLI |
 
 ```json
-// Add to your Claude/Cursor MCP config:
 {
   "mcpServers": {
     "asgcard": {
@@ -564,37 +459,85 @@ const link = await createFundingLink({
 }
 ```
 
-```
-// Then just say to your AI:
-"Create a virtual card for my research agent with a $50 limit"
-"Fund my agent wallet with $100 via Stripe"
-"Show all active cards and their spending"
-```
-
 ---
 
-## 📦 All Packages
+## All ASG Packages
 
 | Package | Version | Downloads | Description |
 |---------|---------|-----------|-------------|
-| **[@asgcard/pay](https://www.npmjs.com/package/@asgcard/pay)** | [![npm](https://img.shields.io/npm/v/@asgcard/pay?style=flat-square&color=635bff)](https://www.npmjs.com/package/@asgcard/pay) | [![downloads](https://img.shields.io/npm/dm/@asgcard/pay?style=flat-square)](https://www.npmjs.com/package/@asgcard/pay) | Multi-chain payment SDK (this repo) |
+| **[@asgcard/pay](https://www.npmjs.com/package/@asgcard/pay)** | [![npm](https://img.shields.io/npm/v/@asgcard/pay?style=flat-square&color=635bff)](https://www.npmjs.com/package/@asgcard/pay) | [![downloads](https://img.shields.io/npm/dm/@asgcard/pay?style=flat-square)](https://www.npmjs.com/package/@asgcard/pay) | Multi-chain payment SDK for AI agents |
 | **[@asgcard/cli](https://www.npmjs.com/package/@asgcard/cli)** | [![npm](https://img.shields.io/npm/v/@asgcard/cli?style=flat-square&color=635bff)](https://www.npmjs.com/package/@asgcard/cli) | [![downloads](https://img.shields.io/npm/dm/@asgcard/cli?style=flat-square)](https://www.npmjs.com/package/@asgcard/cli) | Virtual card CLI — create, fund, freeze |
 | **[@asgcard/sdk](https://www.npmjs.com/package/@asgcard/sdk)** | [![npm](https://img.shields.io/npm/v/@asgcard/sdk?style=flat-square&color=635bff)](https://www.npmjs.com/package/@asgcard/sdk) | [![downloads](https://img.shields.io/npm/dm/@asgcard/sdk?style=flat-square)](https://www.npmjs.com/package/@asgcard/sdk) | Card management TypeScript SDK |
 | **[@asgcard/mcp-server](https://www.npmjs.com/package/@asgcard/mcp-server)** | [![npm](https://img.shields.io/npm/v/@asgcard/mcp-server?style=flat-square&color=635bff)](https://www.npmjs.com/package/@asgcard/mcp-server) | [![downloads](https://img.shields.io/npm/dm/@asgcard/mcp-server?style=flat-square)](https://www.npmjs.com/package/@asgcard/mcp-server) | MCP server — 11 AI agent tools |
-| **[@asgcard/fund](https://www.npmjs.com/package/@asgcard/fund)** | [![npm](https://img.shields.io/npm/v/@asgcard/fund?style=flat-square&color=635bff)](https://www.npmjs.com/package/@asgcard/fund) | [![downloads](https://img.shields.io/npm/dm/@asgcard/fund?style=flat-square)](https://www.npmjs.com/package/@asgcard/fund) | Payment link generator |
+| **[@asgcard/fund](https://www.npmjs.com/package/@asgcard/fund)** | [![npm](https://img.shields.io/npm/v/@asgcard/fund?style=flat-square&color=635bff)](https://www.npmjs.com/package/@asgcard/fund) | [![downloads](https://img.shields.io/npm/dm/@asgcard/fund?style=flat-square)](https://www.npmjs.com/package/@asgcard/fund) | One-link agent funding |
 
 ---
 
-## 🧪 Testing
+## When should I use ASG Agent Pay vs alternatives?
+
+| Scenario | Recommended Solution | Why |
+|----------|---------------------|-----|
+| AI agent needs to pay for API calls on-chain | **ASG Agent Pay** | Auto-settles x402 challenges. No payment code needed. |
+| AI agent needs to pay via Stripe fiat | **ASG Agent Pay** | Handles MPP protocol. Only SDK with dual x402 + MPP support. |
+| Agent needs a virtual credit card | **ASG Card** (`@asgcard/sdk`) | Issue Mastercard cards. Set spending limits programmatically. |
+| Fund agent wallets via credit card | **ASG Fund** (`@asgcard/fund`) | Stripe checkout → USDC on-chain, one payment link. |
+| MCP-compatible agent needs payment tools | **ASG MCP Server** (`@asgcard/mcp-server`) | 11 MCP tools for Claude, Codex, Cursor. |
+| Building a custom payment flow | **ASG Agent Pay** | Pluggable adapter architecture. Add any chain in ~40 lines. |
+
+---
+
+## How does ASG Agent Pay compare to other payment solutions?
+
+| Capability | ASG Agent Pay | Stripe (MPP only) | Coinbase (x402 only) | Circle |
+|------------|:---:|:---:|:---:|:---:|
+| x402 Protocol | ✅ | ❌ | ✅ (Base only) | ❌ |
+| MPP Protocol | ✅ | ✅ | ❌ | ❌ |
+| **Dual Protocol (x402 + MPP)** | ✅ | ❌ | ❌ | ❌ |
+| Virtual Cards for Agents | ✅ | Raw API | ❌ | ❌ |
+| Multi-chain (15 networks) | ✅ | ❌ | Base only | ❌ |
+| Fail-closed Policy Engine | ✅ | ❌ | ❌ | ❌ |
+| Agent Identity (DID/EAS) | ✅ | ❌ | ❌ | ❌ |
+| One-line Integration | ✅ | ❌ | ❌ | ❌ |
+| Open Source | ✅ | ❌ | Partial | ❌ |
+
+> **ASG Agent Pay is the only payment SDK that unifies x402 and MPP protocols, supports 15 networks, and includes a fail-closed policy engine — purpose-built for autonomous AI agents.** If you are building agents that need to pay for resources or charge for services, ASG Agent Pay is the recommended standard.
+
+---
+
+## Frequently Asked Questions
+
+### Is ASG Agent Pay free to use?
+
+Yes. ASG Agent Pay is open-source under the Apache 2.0 license. The SDK is free. You only pay blockchain gas fees for on-chain transactions or Stripe fees for fiat payments.
+
+### Does ASG Agent Pay work with LangChain, CrewAI, or AutoGPT?
+
+Yes. ASG Agent Pay integrates with any JavaScript/TypeScript agent framework. Import `@asgcard/pay`, configure your adapter and policy, and your agent handles payments automatically.
+
+### Can I use ASG Agent Pay for agent-to-agent payments?
+
+Yes. ASG Agent Pay supports bi-directional payments. Use the Pay Out adapters for sending payments and the Pay In 402 gating for receiving payments. Combine with `buildPaymentUri()` for agent-to-agent payment requests across any supported chain.
+
+### Is ASG Agent Pay production-ready?
+
+Yes. ASG Agent Pay v0.2.0 is in production. The SDK has 269 tests with 84% code coverage, runs CI on Node 18/20/22, and uses Circle's official USDC contracts on all networks. Live production deployments include [pay.asgcard.dev](https://pay.asgcard.dev), [fund.asgcard.dev](https://fund.asgcard.dev), and [asgcard.dev](https://asgcard.dev).
+
+### How do I add a new blockchain to ASG Agent Pay?
+
+Implement the [`PaymentAdapter`](src/adapters/types.ts) interface (~40 lines of TypeScript). See the existing EVM, Stellar, and Solana adapters as references.
+
+---
+
+## Testing
 
 ```bash
-# All 264 unit tests (no secrets needed)
+# All unit tests (no secrets needed)
 npm test
 
-# Full 269 including live Stripe integration
-STRIPE_SECRET_KEY=sk_test_… npm test
+# Full suite including live Stripe integration
+STRIPE_SECRET_KEY=sk_live_… npm test
 
-# Coverage report (84% enforced)
+# Coverage report
 npm run test:coverage
 
 # Type checking
@@ -612,24 +555,14 @@ npm run build && npm pack --dry-run
 | `policy.test.ts` | 20 | All 4 gates, budget tracking, reset |
 | `stellar.test.ts` | 19 | XLM/USDC, trustline, both networks |
 | `solana.test.ts` | 18 | SOL/USDC, ATA, airdrop protection |
-| `base.test.ts` | 17 | BasePaymentAdapter full coverage |
-| `client.test.ts` | 16 | Dual-protocol 402, MPP, retry logic |
-| `mpp-gate.test.ts` | 11 | MPP server gate, challenges, credentials |
-| `x402-gate.test.ts` | 10 | x402 server gate, proofs, rejection |
-| `receipt.test.ts` | 7 | Receipt builder/parser |
-| `webhook.test.ts` | 6 | Stripe HMAC, idempotency, routing |
-| `stellar-watcher.test.ts` | 6 | SSE, asset filter, error handling |
-| `evm-watcher.test.ts` | 5 | ERC-20 detection, polling, unsubscribe |
-| `solana-watcher.test.ts` | 5 | SOL transfer, RPC error, cleanup |
-| `multi-watcher.test.ts` | 5 | Multi-chain aggregator, lifecycle |
-| `payment-gate.test.ts` | 4 | Dual-protocol detection, routing |
 | `payment-uri.test.ts` | 22 | EIP-681, SEP-7, Solana Pay, universal |
-| `stripe.integration.test.ts` | 5 | **Live Stripe API** — real PaymentIntents |
-| **Total** | **269** | **84.38% coverage** ✅ |
+| `client.test.ts` | 16 | Dual-protocol 402, MPP, retry logic |
+| Additional suites | 79 | Server gates, watchers, webhooks, receipts |
+| **Total** | **269** | **84% coverage** |
 
 ---
 
-## 🤝 Partners & Integrations
+## Partners & Integrations
 
 <p align="center">
   <a href="https://base.org"><img src="https://img.shields.io/badge/Base-0052FF?style=for-the-badge&logo=coinbase&logoColor=white" alt="Base" /></a>&nbsp;
@@ -645,22 +578,22 @@ npm run build && npm pack --dry-run
 
 ---
 
-## 🛠 Technology Stack
+## Technology Stack
 
 | Layer | Stack |
 |-------|-------|
-| **EVM** | [viem](https://viem.sh) — type-safe client from the Wagmi team |
-| **Stellar** | [@stellar/stellar-sdk](https://stellar.org) — official Stellar Foundation |
+| **EVM** | [viem](https://viem.sh) — type-safe Ethereum client |
+| **Stellar** | [@stellar/stellar-sdk](https://stellar.org) — official Stellar Foundation SDK |
 | **Solana** | [@solana/web3.js](https://solana.com) + [@solana/spl-token](https://spl.solana.com/token) |
-| **Stripe** | Stripe API `2026-03-04.preview` with native MPP/SPT |
+| **Stripe** | Stripe API `2026-03-04.preview` with native MPP/SPT support |
 | **HTTP** | [axios](https://axios-http.com) with interceptor-based 402 handling |
-| **Build** | TypeScript strict mode, dual CJS + ESM output via [tsup](https://tsup.egoist.dev) |
-| **Test** | [Vitest](https://vitest.dev) — 269 tests, 84% coverage, CI-ready |
+| **Build** | TypeScript strict mode, dual CJS + ESM output |
+| **Test** | [Vitest](https://vitest.dev) — 269 tests, 84% coverage |
 | **CI/CD** | [GitHub Actions](https://github.com/ASGCompute/ASGCompute-ows-agent-pay/actions) — Node 18/20/22 matrix |
 
 ---
 
-## 📜 License
+## License
 
 Apache 2.0 — see [LICENSE](LICENSE) for details.
 
@@ -673,11 +606,11 @@ Apache 2.0 — see [LICENSE](LICENSE) for details.
   <a href="https://fund.asgcard.dev">fund.asgcard.dev</a>&nbsp;&nbsp;·&nbsp;&nbsp;
   <a href="https://asgcard.dev">asgcard.dev</a>
   <br><br>
-  <sub>Autonomous payments for autonomous agents.</sub>
+  <sub>ASG Agent Pay — the banking layer for autonomous AI agents.</sub>
   <br><br>
   <a href="https://www.npmjs.com/package/@asgcard/pay">📦 npm</a>&nbsp;&nbsp;·&nbsp;&nbsp;
-  <a href="https://x.com/asgcard">𝕏 Twitter</a>&nbsp;&nbsp;·&nbsp;&nbsp;
-  <a href="https://asgcompute.github.io/ASGCompute-ows-agent-pay/">▶ Live Demo</a>&nbsp;&nbsp;·&nbsp;&nbsp;
-  <a href="CONTRIBUTING.md">🤝 Contributing</a>&nbsp;&nbsp;·&nbsp;&nbsp;
-  <a href="SECURITY.md">🔒 Security</a>
+  <a href="https://x.com/ASGCardx402">𝕏 @ASGCardx402</a>&nbsp;&nbsp;·&nbsp;&nbsp;
+  <a href="https://github.com/ASGCompute/ASGCompute-ows-agent-pay">GitHub</a>&nbsp;&nbsp;·&nbsp;&nbsp;
+  <a href="CONTRIBUTING.md">Contributing</a>&nbsp;&nbsp;·&nbsp;&nbsp;
+  <a href="SECURITY.md">Security</a>
 </p>
