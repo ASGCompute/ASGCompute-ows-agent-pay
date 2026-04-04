@@ -592,7 +592,7 @@ const link = await createFundingLink({
 npm test
 
 # Full 269 including live Stripe integration
-STRIPE_SECRET_KEY=sk_live_… npm test
+STRIPE_SECRET_KEY=sk_test_… npm test
 
 # Coverage report (84% enforced)
 npm run test:coverage
@@ -662,7 +662,7 @@ npm run build && npm pack --dry-run
 
 ## 📜 License
 
-MIT — see [LICENSE](LICENSE) for details.
+Apache 2.0 — see [LICENSE](LICENSE) for details.
 
 ---
 
