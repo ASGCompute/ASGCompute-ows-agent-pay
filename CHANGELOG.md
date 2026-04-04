@@ -2,6 +2,39 @@
 
 All notable changes to `@asgcard/pay` will be documented in this file.
 
+## [0.1.2] — 2026-04-04
+
+### 🚀 Solana Adapter + Production Stripe MPP
+
+Full multi-chain coverage achieved: EVM (10) + Stellar (2) + Solana (2) + Stripe = **15 networks**.
+
+### Added
+- **`SolanaPaymentAdapter`** — Full Solana on-chain settlement
+  - Native SOL transfers via System Program
+  - USDC (SPL Token) transfers with automatic ATA creation
+  - `getSolBalance()` / `getUsdcBalance()` — live RPC balance queries
+  - `requestAirdrop()` — devnet/testnet faucet (blocked on mainnet)
+  - Circle official USDC mints: mainnet `EPjFWdd5…` / devnet `4zMMC9…`
+  - CAIP-2 identifiers: `solana:5eykt4…` (mainnet) / `solana:4uhcVJ…` (devnet)
+- **18 new Solana unit tests** — SOL/USDC transfers, ATA, airdrop, balance checks
+- **5 live Stripe integration tests** — real PaymentIntents on production Stripe API
+  - Crypto deposit via Tempo, PI cancel, account verification
+
+### Changed
+- **Stripe MPP**: Verified live account `acct_1T6hdDPCMcovv6hJ` with MPP access
+- Production environment variables set in Vercel for `pay.asgcard.dev`
+- Barrel exports updated: `SolanaPaymentAdapter` + `SolanaAdapterOptions`
+
+### Dependencies
+- Added `@solana/web3.js` `^1.98.4`
+- Added `@solana/spl-token` `^0.4.14`
+
+### Test Results
+- **148/148 tests passed** (was 125)
+  - 44 EVM, 26 MPP, 25 Stripe, 20 Policy, 18 Solana, 10 Client, 5 Stripe Live
+
+---
+
 ## [0.1.1] — 2026-04-03
 
 ### 🔄 Major Rewrite — Real MPP Protocol Support
@@ -21,57 +54,46 @@ The `StripePaymentAdapter` has been completely rewritten to implement the real M
   - **MPP**: `WWW-Authenticate: Payment` → `Authorization: Payment` flow
   - **x402**: JSON body → `X-PAYMENT` header flow
 - **StripePaymentAdapter** — Full MPP lifecycle:
-  - SPT creation via `POST /v1/test_helpers/shared_payment/granted_tokens` (test)
-  - SPT creation via `POST /v1/shared_payment/issued_tokens` (production)
+  - SPT creation via Stripe API (test + production endpoints)
   - Challenge-bound credential generation
-  - PaymentIntent creation with SPT for fallback mode
-  - `buildServerChallenge()` for gating your own APIs
+  - `createCryptoPaymentIntent()` — Tempo network USDC deposits
+  - `buildServerChallenge()` — Gate your own APIs with MPP 402
   - Autonomous mode (paymentMethodId) + Delegated mode (external SPT)
-- **29 new tests** — MPP protocol (26) + Stripe adapter rewrite (3 new)
+- **29 new tests** — MPP protocol (26) + Stripe adapter (3)
 
 ### Changed
-- `StripePaymentAdapter.pay()` now returns base64url MPP credential (not PaymentIntent ID) when challenge is present
-- `OwsClient` interceptor now checks `WWW-Authenticate` header before JSON body
+- `StripePaymentAdapter.pay()` returns base64url MPP credential when challenge present
+- `OwsClient` interceptor now checks `WWW-Authenticate` before JSON body
 - Challenge selection logic prefers adapter-matching payment method
 
 ### Test Results
 - **125/125 tests passed** (was 96)
-- TypeScript strict mode — PASS
-- Dual CJS/ESM build — PASS
+
+---
 
 ## [0.1.0] — 2026-04-03
 
+### 🎉 Initial Release
+
+Production x402/MPP payment SDK for AI agents.
+
 ### Added
 - **OwsClient** — Axios-based HTTP client with autonomous 402 interceptor
-- **PolicyEngine** — Fail-closed budget controller (per-tx limits, monthly cap, address whitelist)
+- **PolicyEngine** — Fail-closed budget controller (per-tx limits, monthly cap, whitelist)
 - **EvmPaymentAdapter** — Universal EVM on-chain settlement via viem
-  - **10 networks**: Base, Arbitrum, Optimism, Ethereum, Polygon (mainnet + testnet each)
+  - 10 networks: Base, Arbitrum, Optimism, Ethereum, Polygon (mainnet + testnet)
   - Native token (ETH/MATIC) and USDC ERC-20 transfers
   - Circle official USDC contracts for 9/10 networks
-  - `listEvmChains()` helper for runtime chain discovery
-  - One adapter class for ALL EVM chains — no per-chain files
 - **StripePaymentAdapter** — Machine Payments Protocol (MPP) settlement
-  - Shared Payment Token (SPT) based fiat + stablecoin payments
-  - PaymentIntent creation and confirmation
-  - Live/test mode auto-detection from API key
-  - `stripe` is an optional peer dependency (lazy-loaded)
-  - `setSptToken()` for dynamic SPT updates
-- **StellarPaymentAdapter** — On-chain settlement on Stellar
-  - Native XLM payments
-  - Circle USDC payments (native Stellar USDC)
-  - Automatic trustline management
-  - Mainnet + Testnet support
-- **BasePaymentAdapter** — Legacy Base-only adapter (use `EvmPaymentAdapter` instead)
-- **Silent-by-default logging** — opt-in via `logger: console.log`
-- **Dual CJS/ESM build** — works with both `require()` and `import`
-- **Full test suite** — 96 tests via Vitest (PolicyEngine, OwsClient, EvmPaymentAdapter, StripePaymentAdapter)
-- **X-PAYMENT proof generation** — Base64-encoded JSON with CAIP-2 chain ID and tx hash
+- **StellarPaymentAdapter** — Stellar XLM + USDC with trustline management
+- **BasePaymentAdapter** — Legacy Base-only adapter (backward compat)
+- Silent-by-default logging, dual CJS/ESM build
 
 ### Supported Protocols
 - **x402** — HTTP 402 + on-chain settlement (Coinbase/Cloudflare)
 - **MPP** — Machine Payments Protocol + Stripe SPTs (Stripe/Tempo)
 
-### Supported Networks (13 total)
+### Supported Networks (13)
 
 | Network | CAIP-2 | Asset | Protocol |
 |---------|--------|-------|----------|

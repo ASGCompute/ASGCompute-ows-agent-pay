@@ -1,245 +1,280 @@
 <div align="center">
 
-# 🚀 OWS Agent Pay
+# ASG Pay
 
-### Autonomous Payment SDK for AI Agents
+### Payment Infrastructure for Autonomous AI Agents
 
-**OWS-compliant** • **x402 Protocol** • **Multi-chain** • **Policy-gated**
+**15 Networks** • **x402 + MPP Protocols** • **Fail-Closed Policy Engine** • **Production-Ready**
 
+[![npm version](https://img.shields.io/npm/v/@asgcard/pay?color=635bff)](https://www.npmjs.com/package/@asgcard/pay)
+[![npm downloads](https://img.shields.io/npm/dm/@asgcard/pay?label=downloads&color=22c55e)](https://www.npmjs.com/package/@asgcard/pay)
+[![Tests](https://img.shields.io/badge/tests-148%20passed-22c55e)](src/__tests__)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![OWS v1.0.0](https://img.shields.io/badge/OWS-v1.0.0-00D4FF)](https://openwallet.sh)
-[![x402](https://img.shields.io/badge/x402-Protocol-FF6B35)](https://x402.org)
-[![npm](https://img.shields.io/npm/dm/@asgcard/pay?label=npm%20downloads&color=22c55e)](https://www.npmjs.com/package/@asgcard/pay)
-[![Base](https://img.shields.io/badge/Base-0052FF?logo=coinbase&logoColor=white)](https://base.org)
-[![Stellar](https://img.shields.io/badge/Stellar-7C3AED)](https://stellar.org)
-[![Built by ASG Pay](https://img.shields.io/badge/Built_by-ASG_Pay-00FF88)](https://pay.asgcard.dev)
+[![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6?logo=typescript&logoColor=white)](tsconfig.json)
 
-*The AI agent simply calls `performTask()` — the SDK handles payment, policy validation, on-chain settlement, and proof generation transparently.*
+```bash
+npm install @asgcard/pay
+```
 
-[Documentation](https://pay.asgcard.dev) • [**▶ Live Demo**](https://asgcompute.github.io/ASGCompute-ows-agent-pay/) • [Architecture](#%EF%B8%8F-architecture) • [Live Products](#-live-production-products) • [OWS Compliance](#-ows-spec-compliance)
+*Give your AI agent a wallet with rules. The agent calls `performTask()` — the SDK handles payment, policy, settlement, and proof generation transparently across 15 networks.*
 
-> **🎮 [Try the interactive demo →](https://asgcompute.github.io/ASGCompute-ows-agent-pay/)** — no install, no wallet, no ETH needed. Watch the full x402 flow in your browser.
-
-> **🌐 [View the full ecosystem demo →](https://asgcompute.github.io/ASGCompute-ows-agent-pay/ecosystem.html)** — Fund → Card → Pay: the complete autonomous agent financial stack.
+[Documentation](https://pay.asgcard.dev) • [Live Demo](https://asgcompute.github.io/ASGCompute-ows-agent-pay/) • [Architecture](#architecture) • [Ecosystem](#ecosystem)
 
 </div>
 
 ---
 
-## 💡 What This Solves
+## What This Solves
 
-AI agents are rapidly becoming autonomous economic actors, but they have no native way to **pay for services programmatically**. OWS Agent Pay bridges this gap:
+AI agents are becoming autonomous workers, but they have no native way to **pay for services**. When an agent hits a paywall (HTTP 402), it stops. ASG Pay fixes this:
 
 ```
-AI Agent calls API → Server returns HTTP 402 → SDK auto-pays → Agent gets result
+Agent → API request → 402 "Pay $0.50" → SDK auto-settles → Agent gets result
 ```
 
-**Zero payment code required from the agent developer.** The SDK intercepts, validates, settles, and retries — all transparently.
-
-> ⚠️ **This is not a hackathon prototype.** We extracted the core x402 payment logic from our **live production stack** (10K+ monthly NPM downloads) into a clean, OWS-compliant SDK.
+**Zero payment code in your agent.** The SDK intercepts 402 responses, validates spend against policy, settles on-chain (or via Stripe), and retries — all in one round-trip.
 
 ---
 
-## ⚡ Quick Start
-
-### Option 1: Browser Demo (Zero Install)
-
-> **[▶ Open the live demo →](https://asgcompute.github.io/ASGCompute-ows-agent-pay/)** — click "Run Live Demo" and watch the full x402 cycle in 30 seconds.
-
-### Option 2: CLI Demo
-
-```bash
-# Clone and install
-git clone https://github.com/ASGCompute/ASGCompute-ows-agent-pay.git
-cd ASGCompute-ows-agent-pay
-npm install
-
-# Run the demo (simulated mode — no ETH needed)
-npx ts-node demo.ts --simulate
-
-# Or run with real Base Sepolia testnet (auto-funds via Coinbase faucet)
-npx ts-node demo.ts
-```
-
-### Option 3: Use in Your Agent
+## Quick Start
 
 ```typescript
-import { OwsClient, BasePaymentAdapter } from 'ows-agent-pay';
+import { OwsClient, EvmPaymentAdapter } from '@asgcard/pay';
 
-const adapter = new BasePaymentAdapter({
-  privateKey: process.env.AGENT_PRIVATE_KEY as `0x${string}`,
-  network: 'mainnet',
+// Pick any chain: 'base', 'arbitrum', 'optimism', 'ethereum', 'polygon'
+// Each has mainnet + testnet. Asset: 'native' or 'USDC'.
+const adapter = new EvmPaymentAdapter({
+  chain: 'base',
+  asset: 'USDC',
+  privateKey: process.env.AGENT_KEY as `0x${string}`,
 });
 
 const agent = new OwsClient({
-  baseURL: 'https://inference-api.example.com',
+  baseURL: 'https://api.example.com',
   policy: {
-    monthlyBudget: 100,
-    maxAmountPerTransaction: 5,
-    allowedDestinations: ['0x...'],
+    maxAmountPerTransaction: 5,   // $5 max per call
+    monthlyBudget: 100,           // $100/month total
   },
-  adapter, // Swap to StellarPaymentAdapter for Stellar
+  adapter,
 });
 
-// Agent code — no payment logic needed!
-const result = await agent.performTask('/v1/chat', {
+// Agent code — no payment logic needed
+const result = await agent.performTask('/v1/inference', {
   model: 'gpt-4',
   messages: [{ role: 'user', content: 'Summarize this document' }],
 });
 ```
 
-### Expected CLI Output
+### Multi-Chain Examples
 
-```
-╔══════════════════════════════════════════════════╗
-║   OWS Agent Pay — Base/EVM Autonomous Demo      ║
-║   Built by ASG Pay  •  https://asgcard.dev       ║
-║   x402 Protocol  •  Base (Coinbase L2)           ║
-╚══════════════════════════════════════════════════╝
+```typescript
+// Stellar USDC (Mainnet)
+import { StellarPaymentAdapter } from '@asgcard/pay';
+const stellar = new StellarPaymentAdapter({
+  secretKey: process.env.STELLAR_SECRET!,
+  network: 'mainnet',
+  asset: 'USDC',
+});
 
-[Server] Mock API listening on http://localhost:4020
-[Agent] Wallet: 0xAb5801a7D398991B8a7cF7706226...
-[Agent] Chain:  Base Sepolia (eip155:84532)
-[Agent] 💧 Requesting ETH from Base Sepolia faucet…
-[Agent] ✅ Wallet funded from Coinbase faucet
-[Agent] 💰 Balance: 0.1 ETH
-[Agent] 🧠 Sending inference request…
+// Solana (Devnet SOL or Mainnet USDC)
+import { SolanaPaymentAdapter } from '@asgcard/pay';
+const solana = new SolanaPaymentAdapter({
+  secretKey: myKeypair.secretKey,
+  network: 'mainnet-beta',
+  asset: 'USDC',
+});
 
-[OWS Client] ⚡ Received 402 Payment Required challenge
-[OWS Client] 💰 Requested payment: $0.50
-[OWS Client] ⛓️  Settlement chain: Base (eip155:84532)
-[OWS Client] ✅ Policy check PASSED — settling on-chain…
-[Base] 🚀 Building payment → 0xDead71…8B3c4F (0.0005 ETH, Base Sepolia)
-[Base] 📡 Submitting transaction…
-[Base] ✅ Confirmed — hash: 0x9e8f7a6b5c4d3e2f…
-[OWS Client] 🔁 Constructing X-PAYMENT token and retrying…
-
-[AI Agent] ✅ Task completed: The AI model computed the answer...
-
-── 🏁 Demo complete ───────────────────────────
+// Stripe Machine Payments Protocol
+import { StripePaymentAdapter } from '@asgcard/pay';
+const stripe = new StripePaymentAdapter({
+  stripeSecretKey: process.env.STRIPE_SECRET_KEY!,
+  networkId: 'my-network',
+});
 ```
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 ```
-                            ┌──────────────────┐
-                            │    AI  Agent      │
-                            │  performTask()    │
-                            └────────┬─────────┘
-                                     │ HTTP POST
-                            ┌────────▼─────────┐
-                            │   OwsClient       │
-                            │  (Axios + 402     │
-                            │   interceptor)    │
-                            └─┬──────────────┬──┘
-                              │              │
-               ┌──────────────▼──┐   ┌───────▼───────────┐
-               │  PolicyEngine   │   │  PaymentAdapter    │
-               │  ┌────────────┐ │   │  (interface)       │
-               │  │ Budget     │ │   │                    │
-               │  │ Per-tx max │ │   │  ┌──────────────┐  │
-               │  │ Allowlist  │ │   │  │ Base (viem)  │  │
-               │  └────────────┘ │   │  ├──────────────┤  │
-               └─────────────────┘   │  │ Stellar      │  │
-                                     │  ├──────────────┤  │
-                                     │  │ (Arbitrum…)  │  │
-                                     │  └──────────────┘  │
-                                     └───────────────────┘
+                        ┌──────────────────┐
+                        │    AI  Agent      │
+                        │  performTask()    │
+                        └────────┬─────────┘
+                                 │ HTTP request
+                        ┌────────▼─────────┐
+                        │   OwsClient       │
+                        │  (Axios + 402     │
+                        │   interceptor)    │
+                        └─┬──────────────┬──┘
+              detect      │              │
+         ┌────────────────▼──┐   ┌───────▼──────────────┐
+         │  Protocol Router   │   │   PolicyEngine        │
+         │                    │   │  ┌──────────────────┐ │
+         │  WWW-Authenticate  │   │  │ Per-tx limit     │ │
+         │  → MPP handler     │   │  │ Monthly budget   │ │
+         │                    │   │  │ Dest whitelist   │ │
+         │  JSON body x402    │   │  │ Fail-closed      │ │
+         │  → x402 handler    │   │  └──────────────────┘ │
+         └────────────────────┘   └───────────────────────┘
+                                           │
+                    ┌──────────────────────▼───────────────────┐
+                    │          PaymentAdapter (interface)       │
+                    ├──────────┬──────────┬──────────┬─────────┤
+                    │   EVM    │ Stellar  │  Solana  │ Stripe  │
+                    │ 10 chains│ XLM/USDC │ SOL/USDC │  MPP    │
+                    │  viem    │ Horizon  │ web3.js  │  SPT    │
+                    └──────────┴──────────┴──────────┴─────────┘
 ```
 
 | Component | File | Purpose |
 |-----------|------|---------|
-| **OwsClient** | [`client.ts`](src/client.ts) | Chain-agnostic Axios wrapper with 402 interceptor |
-| **PolicyEngine** | [`policy.ts`](src/policy.ts) | Fail-closed budget, per-tx limits, destination allowlist |
-| **BasePaymentAdapter** | [`adapters/base.ts`](src/adapters/base.ts) | On-chain settlement via Base (Coinbase L2) using viem |
-| **StellarPaymentAdapter** | [`adapters/stellar.ts`](src/adapters/stellar.ts) | On-chain settlement via Stellar network |
-| **PaymentAdapter** | [`adapters/types.ts`](src/adapters/types.ts) | Generic interface — plug in any chain (~40 lines) |
+| **OwsClient** | [`client.ts`](src/client.ts) | Dual-protocol HTTP client with autonomous 402 handling |
+| **PolicyEngine** | [`policy.ts`](src/policy.ts) | Fail-closed budget controller (4 gates) |
+| **MPP Protocol** | [`mpp.ts`](src/mpp.ts) | RFC 7235 challenge/credential parser + builder |
+| **EvmPaymentAdapter** | [`adapters/evm.ts`](src/adapters/evm.ts) | 10 EVM chains — ETH/MATIC + USDC (Circle) |
+| **StellarPaymentAdapter** | [`adapters/stellar.ts`](src/adapters/stellar.ts) | Stellar XLM + USDC with trustline management |
+| **SolanaPaymentAdapter** | [`adapters/solana.ts`](src/adapters/solana.ts) | SOL + USDC SPL with auto ATA creation |
+| **StripePaymentAdapter** | [`adapters/stripe.ts`](src/adapters/stripe.ts) | Stripe MPP — SPT lifecycle + crypto deposits |
+| **PaymentAdapter** | [`adapters/types.ts`](src/adapters/types.ts) | Interface — add any chain in ~40 lines |
 
 ---
 
-## 📐 OWS Spec Compliance
+## Supported Networks (15)
 
-| OWS Section | Requirement | Implementation |
-|-------------|-------------|----------------|
-| **§03 Intercept** | Detect `402 Payment Required` | Axios response interceptor ([`client.ts:44`](src/client.ts#L44)) |
-| **§04 Evaluate** | Validate `x402Version` + `accepts[]` | Envelope parser + PolicyEngine ([`policy.ts`](src/policy.ts)) |
-| **§05 Settle** | Execute on-chain payment | BasePaymentAdapter / StellarPaymentAdapter |
-| **§06 Prove** | Attach `X-PAYMENT` header | Base64-encoded proof with tx hash + CAIP-2 chain ID |
-| **§07 Retry** | Resubmit original request | Axios re-request with proof header |
-| **§08 Chains** | CAIP-2 chain identifiers | `eip155:8453` (Base), `eip155:84532` (Sepolia), `stellar:testnet` |
+### EVM Chains (10)
+
+| Chain | CAIP-2 | USDC Contract | Status |
+|-------|--------|---------------|--------|
+| **Base** | `eip155:8453` | `0x8335…` (Circle) | ✅ Live |
+| **Base Sepolia** | `eip155:84532` | `0x036C…` (Circle) | ✅ Testnet |
+| **Arbitrum One** | `eip155:42161` | `0xaf88…` (Circle) | ✅ Live |
+| **Arbitrum Sepolia** | `eip155:421614` | `0x75fa…` (Circle) | ✅ Testnet |
+| **Optimism** | `eip155:10` | `0x0b2C…` (Circle) | ✅ Live |
+| **Optimism Sepolia** | `eip155:11155420` | `0x5fd8…` (Circle) | ✅ Testnet |
+| **Ethereum** | `eip155:1` | `0xA0b8…` (Circle) | ✅ Live |
+| **Ethereum Sepolia** | `eip155:11155111` | `0x1c7D…` (Circle) | ✅ Testnet |
+| **Polygon** | `eip155:137` | `0x3c49…` (Circle) | ✅ Live |
+| **Polygon Amoy** | `eip155:80002` | — | ✅ Testnet |
+
+### Stellar (2)
+
+| Network | CAIP-2 | Assets | Status |
+|---------|--------|--------|--------|
+| **Stellar Mainnet** | `stellar:pubnet` | XLM, USDC (Circle) | ✅ Live |
+| **Stellar Testnet** | `stellar:testnet` | XLM, USDC | ✅ Testnet |
+
+### Solana (2)
+
+| Network | CAIP-2 | Assets | Status |
+|---------|--------|--------|--------|
+| **Solana Mainnet** | `solana:5eykt4…` | SOL, USDC (Circle) | ✅ Live |
+| **Solana Devnet** | `solana:4uhcVJ…` | SOL, USDC | ✅ Testnet |
+
+### Stripe (1)
+
+| Network | CAIP-2 | Settlement | Status |
+|---------|--------|------------|--------|
+| **Stripe MPP** | `stripe:live` | USD via SPT + Tempo USDC | ✅ Live |
 
 ---
 
-## 🔐 Policy Engine (Fail-Closed)
+## Dual Protocol Support
 
-Every payment **must** pass **all three** checks before execution:
+ASG Pay is the only SDK that natively supports **both** major machine payment protocols:
 
-```typescript
-const policy: BudgetPolicy = {
-  monthlyBudget: 50.0,           // USD cap per calendar month
-  maxAmountPerTransaction: 5.0,  // USD cap per single payment
-  allowedDestinations: [         // Whitelist of recipient addresses
-    '0xDead7101a13B2B6e2A4497706226bc3c4F',
-  ],
-};
+### x402 Protocol (Coinbase / Cloudflare)
+```
+Server → 402 + JSON { x402Version, accepts: [{ payTo, amount, asset }] }
+Agent  → On-chain tx → X-PAYMENT header with proof
+Server → 200 OK
 ```
 
-❌ Over budget → **REJECTED**  
-❌ Over per-tx limit → **REJECTED**  
-❌ Unknown destination → **REJECTED**  
-✅ All checks pass → **SETTLED**
+### MPP — Machine Payments Protocol (Stripe)
+```
+Server → 402 + WWW-Authenticate: Payment id="…", method="stripe", request="…"
+Agent  → Create SPT → Authorization: Payment <credential>
+Server → 200 OK + Payment-Receipt header
+```
 
 ---
 
-## ⛓️ Supported Chains
+## Policy Engine (Fail-Closed)
 
-| Chain | Adapter | CAIP-2 | Status |
-|-------|---------|--------|--------|
-| **Base** (Coinbase L2) | `BasePaymentAdapter` | `eip155:8453` | ✅ Live |
-| **Base Sepolia** | `BasePaymentAdapter` | `eip155:84532` | ✅ Testnet |
-| **Stellar** | `StellarPaymentAdapter` | `stellar:pubnet` | ✅ Live |
-| **Arbitrum** | `EvmPaymentAdapter` | `eip155:42161` | 🔜 Next |
-| **Solana** | `SolanaPaymentAdapter` | `solana:mainnet` | 🔜 Planned |
-| **Sui** | `SuiPaymentAdapter` | `sui:mainnet` | 🔜 Planned |
+Every payment must pass **all four** gates before execution. If any gate fails → payment **silently rejected**. No override. No bypass.
 
-> 💡 **Any chain** can be added by implementing the `PaymentAdapter` interface (~40 lines).
+```typescript
+const policy = {
+  maxAmountPerTransaction: 5,     // Gate 1: Per-transaction cap ($)
+  monthlyBudget: 100,             // Gate 2: Rolling monthly budget ($)
+  allowedDestinations: ['0x…'],   // Gate 3: Address whitelist (optional)
+};
+// Gate 4: Amount must be > 0 (implicit)
+```
+
+```
+$10 request → ❌ REJECTED (exceeds per-tx $5 limit)
+$3 to unknown addr → ❌ REJECTED (not in whitelist)
+$3 to whitelisted addr → ✅ SETTLED
+$3 after $98 spent → ❌ REJECTED (would exceed $100 budget)
+```
 
 ---
 
-## 🌐 Live Production Products
+## Testing
 
-> **This is not a hackathon prototype.** Every product below is deployed and serving real traffic right now.
+```bash
+# Unit tests (no secrets needed)
+npm test
 
-### 🔗 Try them yourself
+# Full suite including live Stripe integration
+STRIPE_SECRET_KEY=sk_live_… npm test
+```
+
+**148 tests** across 7 test files:
+
+| Test File | Tests | Coverage |
+|-----------|-------|----------|
+| `mpp.test.ts` | 26 | Challenge parsing, credential building, protocol detection |
+| `policy.test.ts` | 20 | All 4 gates, budget tracking, reset, whitelist |
+| `stripe.test.ts` | 25 | SPT creation, PI flow, challenge handling |
+| `client.test.ts` | 10 | Dual-protocol 402 handling, retry logic |
+| `solana.test.ts` | 18 | SOL/USDC transfers, ATA, airdrop protection |
+| `evm.test.ts` | 44 | 10 chains, native + USDC, balance checks |
+| `stripe.integration.test.ts` | 5 | **Live Stripe API** — real PaymentIntents |
+
+---
+
+## Ecosystem
+
+ASG Pay is the payment engine powering the ASG Card ecosystem:
 
 <table>
 <tr>
 <td width="33%" align="center">
 
-### 💳 ASG Pay
-**Universal Payment Gateway**
+### 💳 ASG Card
+**Virtual Cards for AI Agents**
 
-The AI agent payment infrastructure.
-Accept fiat and crypto across 60+ chains.
+Issue virtual MasterCards on demand.
+Fund via USDC on Stellar.
 
-**[▶ pay.asgcard.dev](https://pay.asgcard.dev)**
+**[asgcard.dev](https://asgcard.dev)**
 
 ```bash
-npm install @asgcard/pay
+npx @asgcard/cli
 ```
 
 </td>
 <td width="33%" align="center">
 
 ### 💰 ASG Fund
-**Agent Wallet Funding**
+**One-Link Agent Funding**
 
-Top up any AI agent's wallet with
-USDC on Stellar — via card, bank, or stablecoin.
+Top up any agent wallet with
+credit card, bank, or crypto.
 
-**[▶ fund.asgcard.dev](https://fund.asgcard.dev)**
+**[fund.asgcard.dev](https://fund.asgcard.dev)**
 
 ```bash
 npm install @asgcard/fund
@@ -248,52 +283,64 @@ npm install @asgcard/fund
 </td>
 <td width="33%" align="center">
 
-### 🃏 ASG Card
-**Virtual Cards for AI Agents**
+### ⚡ ASG Pay SDK
+**Payment Infrastructure**
 
-Issue virtual debit cards on demand.
-Pay via x402 or Stripe Machine Payments.
+15 networks, 2 protocols,
+fail-closed policy engine.
 
-**[▶ asgcard.dev](https://asgcard.dev)**
+**[pay.asgcard.dev](https://pay.asgcard.dev)**
 
 ```bash
-npx @asgcard/cli
+npm install @asgcard/pay
 ```
 
 </td>
 </tr>
 </table>
 
-### 📦 NPM Packages
+### NPM Packages
 
-| Package | Install | Downloads | Description |
-|---------|---------|-----------|-------------|
-| **@asgcard/pay** | `npm i @asgcard/pay` | [![npm](https://img.shields.io/npm/dm/@asgcard/pay?color=22c55e)](https://www.npmjs.com/package/@asgcard/pay) | Core payment SDK |
-| **@asgcard/fund** | `npm i @asgcard/fund` | [![npm](https://img.shields.io/npm/dm/@asgcard/fund?color=22c55e)](https://www.npmjs.com/package/@asgcard/fund) | Payment link generator CLI |
-| **@asgcard/cli** | `npx @asgcard/cli` | [![npm](https://img.shields.io/npm/dm/@asgcard/cli?color=22c55e)](https://www.npmjs.com/package/@asgcard/cli) | Virtual card issuing CLI |
-
-### 🎮 Interactive Demos
-
-| Demo | URL | What You'll See |
-|------|-----|-----------------|
-| **Browser Demo** | [▶ index.html](https://asgcompute.github.io/ASGCompute-ows-agent-pay/) | Full x402 cycle: 402 → Policy → Settlement → Proof → Result. Zero install. |
-| **Ecosystem Demo** | [▶ ecosystem.html](https://asgcompute.github.io/ASGCompute-ows-agent-pay/ecosystem.html) | 3 interactive tabs: Fund Agent → Issue Card → x402 Pay — each with live terminal. |
-| **Fund Agent** | [▶ fund.asgcard.dev](https://fund.asgcard.dev) | Real agent wallet ($14.37 USDC + XLM on Stellar mainnet). |
-| **Issue Card** | [▶ asgcard.dev](https://asgcard.dev) | Virtual debit card issuance for AI agents via x402 + Stripe. |
+| Package | Description |
+|---------|-------------|
+| [`@asgcard/pay`](https://www.npmjs.com/package/@asgcard/pay) | Core payment SDK — this repo |
+| [`@asgcard/cli`](https://www.npmjs.com/package/@asgcard/cli) | Virtual card CLI |
+| [`@asgcard/sdk`](https://www.npmjs.com/package/@asgcard/sdk) | Card management TypeScript SDK |
+| [`@asgcard/mcp-server`](https://www.npmjs.com/package/@asgcard/mcp-server) | MCP server (11 tools for Claude/Codex) |
+| [`@asgcard/fund`](https://www.npmjs.com/package/@asgcard/fund) | Payment link generator |
 
 ---
 
-## 🏆 Hackathon Track Alignment
+## Key Metrics
 
-| Track | Alignment |
+| Metric | Value |
+|--------|-------|
+| **Networks** | 15 (10 EVM + 2 Stellar + 2 Solana + Stripe) |
+| **Protocols** | 2 (x402 + MPP) |
+| **Tests** | 148 passed |
+| **Source** | ~2,200 lines TypeScript |
+| **Dependencies** | 5 (viem, axios, @stellar/stellar-sdk, @solana/web3.js, @solana/spl-token) |
+| **Products Live** | 3 (pay, fund, card) |
+| **Stripe MPP** | Live account — crypto deposits via Tempo/Stellar |
+| **License** | MIT |
+
+---
+
+## Technology
+
+| Layer | Technology |
 |-------|-----------|
-| **💰 Payments** | ⭐ Core — x402 autonomous settlement on Base |
-| **🤖 AI Agents** | ⭐ Core — transparent payment layer for agents |
-| **🔒 Agent Spend Governance** | ⭐ Core — PolicyEngine (fail-closed budget control) |
-| **🔗 Interoperability** | Multi-chain adapters via CAIP-2 |
-| **🏗️ Infrastructure** | Production SDK + ASG Pay ecosystem |
+| **EVM** | [viem](https://viem.sh) — type-safe Ethereum client |
+| **Stellar** | [@stellar/stellar-sdk](https://stellar.org) — official Foundation SDK |
+| **Solana** | [@solana/web3.js](https://solana.com) + [@solana/spl-token](https://spl.solana.com/token) |
+| **Stripe** | Stripe API `2026-03-04.preview` — MPP/SPT native |
+| **HTTP** | [axios](https://axios-http.com) — interceptor-based 402 handling |
+| **Build** | TypeScript strict, dual CJS/ESM output |
+| **Test** | [Vitest](https://vitest.dev) — 148 tests |
 
-### 🤝 Sponsor & Partner Alignment
+---
+
+## Partners & Integrations
 
 <table>
 <tr>
@@ -301,80 +348,44 @@ npx @asgcard/cli
 <a href="https://base.org">
 <img src="https://img.shields.io/badge/Base-0052FF?style=for-the-badge&logo=coinbase&logoColor=white" alt="Base" />
 </a>
-<br><sub>Primary settlement<br/>Native x402 chain</sub>
+<br><sub>x402 native chain<br/>Primary EVM</sub>
 </td>
 <td align="center" width="14%">
 <a href="https://circle.com">
 <img src="https://img.shields.io/badge/Circle-00D632?style=for-the-badge&logoColor=white" alt="Circle" />
 </a>
-<br><sub>USDC settlement<br/>EVM + Stellar</sub>
+<br><sub>USDC issuer<br/>9 chains</sub>
 </td>
 <td align="center" width="14%">
 <a href="https://stellar.org">
 <img src="https://img.shields.io/badge/Stellar-7C3AED?style=for-the-badge" alt="Stellar" />
 </a>
-<br><sub>Production adapter<br/>Mainnet USDC</sub>
+<br><sub>Stellar USDC<br/>Tempo network</sub>
 </td>
 <td align="center" width="14%">
-<a href="https://arbitrum.io">
-<img src="https://img.shields.io/badge/Arbitrum-28A0F0?style=for-the-badge" alt="Arbitrum" />
+<a href="https://solana.com">
+<img src="https://img.shields.io/badge/Solana-14F195?style=for-the-badge&logo=solana&logoColor=black" alt="Solana" />
 </a>
-<br><sub>EVM adapter<br/>Roadmap</sub>
+<br><sub>SOL + USDC SPL<br/>Mainnet + Devnet</sub>
 </td>
 <td align="center" width="14%">
 <a href="https://stripe.com">
 <img src="https://img.shields.io/badge/Stripe-635BFF?style=for-the-badge&logo=stripe&logoColor=white" alt="Stripe" />
 </a>
-<br><sub>Fiat settlement<br/>fund.asgcard.dev</sub>
+<br><sub>MPP Partner<br/>Live account</sub>
 </td>
 <td align="center" width="14%">
-<a href="https://li.fi">
-<img src="https://img.shields.io/badge/LI.FI-EB46FF?style=for-the-badge" alt="Li.Fi" />
+<a href="https://arbitrum.io">
+<img src="https://img.shields.io/badge/Arbitrum-28A0F0?style=for-the-badge" alt="Arbitrum" />
 </a>
-<br><sub>Cross-chain<br/>Aggregator</sub>
-</td>
-<td align="center" width="14%">
-<a href="https://rozo.com">
-<img src="https://img.shields.io/badge/ROZO-00BFFF?style=for-the-badge" alt="ROZO" />
-</a>
-<br><sub>Bridging<br/>Partner</sub>
+<br><sub>L2 settlement<br/>USDC native</sub>
 </td>
 </tr>
 </table>
 
 ---
 
-## 🛣️ Roadmap
-
-- [x] **OWS-compliant 402 interceptor** with policy engine
-- [x] **Base adapter** (viem, Coinbase L2 — native x402 chain)
-- [x] **Stellar adapter** (production-proven via ASG Pay)
-- [x] **Multi-chain adapter interface** (CAIP-2)
-- [x] **Interactive browser demo** (GitHub Pages)
-- [x] **Full ecosystem demo** (Fund → Card → Pay lifecycle)
-- [ ] **Arbitrum / OP Stack** adapters
-- [ ] **Solana adapter** (via @solana/web3.js)
-- [ ] **Li.Fi integration** (cross-chain settlement aggregator)
-- [ ] **MCP tool server** (A2A protocol bridge)
-- [ ] **USDC (ERC-20)** transfer support on Base
-
----
-
-## 📊 Key Metrics
-
-| Metric | Value |
-|--------|-------|
-| **NPM Downloads** | 10K+ monthly ([@asgcard](https://www.npmjs.com/org/asgcard)) |
-| **SDK Size** | ~529 lines TypeScript |
-| **Dependencies** | 3 (viem, axios, @stellar/stellar-sdk) |
-| **Chains Live** | 2 (Base + Stellar) |
-| **Products Live** | 3 (pay, fund, card) — all in production |
-| **OWS Compliance** | 6/6 specification sections |
-| **License** | MIT |
-
----
-
-## 📄 License
+## License
 
 MIT — see [LICENSE](LICENSE) for details.
 
@@ -382,12 +393,12 @@ MIT — see [LICENSE](LICENSE) for details.
 
 <div align="center">
 
-### Built with ❤️ by [ASG Compute](https://github.com/ASGCompute)
+### Built by [ASG Compute](https://asgcompute.com)
 
 [pay.asgcard.dev](https://pay.asgcard.dev) • [fund.asgcard.dev](https://fund.asgcard.dev) • [asgcard.dev](https://asgcard.dev)
 
 *Autonomous payments for autonomous agents.*
 
-**[▶ Try the Live Demo](https://asgcompute.github.io/ASGCompute-ows-agent-pay/) • [📦 NPM](https://www.npmjs.com/org/asgcard) • [🐦 Twitter](https://x.com/asgcard)**
+**[📦 npm](https://www.npmjs.com/package/@asgcard/pay) • [🐦 Twitter](https://x.com/asgcard) • [▶ Live Demo](https://asgcompute.github.io/ASGCompute-ows-agent-pay/)**
 
 </div>
