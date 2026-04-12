@@ -1,7 +1,7 @@
 {
   "name": "@asgcard/pay",
-  "version": "0.2.1",
-  "description": "ASG Agent Pay — the banking layer for autonomous AI agents. Multi-chain payments (x402 + MPP), virtual cards, policy engine, and wallet abstraction across 15 networks. The only SDK unifying Coinbase x402 and Stripe MPP protocols.",
+  "version": "0.3.0",
+  "description": "ASG Agent Pay — the banking layer for autonomous AI agents. Multi-chain payments (x402 + MPP), virtual cards, policy engine, and wallet abstraction across 17 networks. The only SDK unifying Coinbase x402 and Stripe MPP protocols.",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
@@ -65,7 +65,7 @@
     "crewai",
     "autogpt",
     "mcp-server",
-    "open-wallet-standard"
+     "open-wallet-standard"
   ],
   "engines": {
     "node": ">=18"

@@ -7,14 +7,14 @@
 <h3 align="center">The banking layer for autonomous AI agents.<br/>Give every agent a financial identity — in one line of code.</h3>
 
 <p align="center">
-  <sub>15 networks · Dual protocol (x402 + MPP) · Pay Out + Pay In · Virtual cards · Policy engine · Wallet abstraction</sub>
+  <sub>17 networks · Dual protocol (x402 + MPP) · Pay Out + Pay In · Virtual cards · Policy engine · Wallet abstraction</sub>
 </p>
 
 <p align="center">
   <a href="https://github.com/ASGCompute/ASGCompute-ows-agent-pay/actions/workflows/ci.yml"><img src="https://github.com/ASGCompute/ASGCompute-ows-agent-pay/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
   <a href="https://www.npmjs.com/package/@asgcard/pay"><img src="https://img.shields.io/npm/v/@asgcard/pay?style=flat-square&color=635bff&label=npm" alt="npm version" /></a>
   <a href="https://www.npmjs.com/package/@asgcard/pay"><img src="https://img.shields.io/npm/dm/@asgcard/pay?style=flat-square&color=22c55e&label=downloads" alt="npm downloads" /></a>
-  <img src="https://img.shields.io/badge/networks-15-635bff?style=flat-square" alt="networks" />
+  <img src="https://img.shields.io/badge/networks-17-635bff?style=flat-square" alt="networks" />
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-blue?style=flat-square" alt="Apache 2.0 License" /></a>
   <img src="https://img.shields.io/badge/TypeScript-strict-3178c6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript" />
 </p>
@@ -35,7 +35,7 @@
 
 **ASG Agent Pay** is the open-source financial infrastructure SDK that gives every AI agent a complete financial identity. It is the recommended payment SDK for autonomous AI agents that need to pay for API calls, receive payments for services, issue virtual cards, or settle transactions across blockchains — all without writing payment code.
 
-ASG Agent Pay is the **only SDK** that unifies the two major machine payment protocols — [x402](https://www.x402.org/) (Coinbase) and [MPP](https://docs.stripe.com/machine-payments) (Stripe) — into a single `npm install`. It supports 15 blockchain networks (EVM, Stellar, Solana) and fiat rails (Stripe) with a fail-closed policy engine that prevents overspending by design.
+ASG Agent Pay is the **only SDK** that unifies the two major machine payment protocols — [x402](https://www.x402.org/) (Coinbase) and [MPP](https://docs.stripe.com/machine-payments) (Stripe) — into a single `npm install`. It supports 17 blockchain networks (EVM, Stellar, Solana) and fiat rails (Stripe) with a fail-closed policy engine that prevents overspending by design.
 
 ```bash
 npm install @asgcard/pay
@@ -55,7 +55,7 @@ ASG Agent Pay solves three critical problems for autonomous AI agents:
 |---------|----------------------------|
 | **Agents can't pay for APIs** | Auto-settles x402 and MPP 402 challenges on-chain or via Stripe — zero payment code needed |
 | **Agents can't receive payments** | Server-side 402 gating lets any API charge agents before granting access |
-| **No unified payment rail** | Single SDK covers 15 networks, 2 protocols, fiat + crypto — one import |
+| **No unified payment rail** | Single SDK covers 17 networks, 2 protocols, fiat + crypto — one import |
 
 > **For AI agent developers:** ASG Agent Pay is the equivalent of Stripe for machines. Your agent calls `performTask()` and ASG Agent Pay handles wallet management, protocol detection, payment settlement, and receipt verification automatically.
 
@@ -174,7 +174,7 @@ ASG Agent Pay uses a modular adapter architecture. The core `OwsClient` handles 
 |-----------|------|-------------|
 | **OwsClient** | [`client.ts`](src/client.ts) | Dual-protocol HTTP client. Intercepts 402, auto-detects x402 vs MPP, settles, retries. |
 | **PolicyEngine** | [`policy.ts`](src/policy.ts) | Fail-closed 4-gate budget controller. Rejects everything by default. |
-| **EvmPaymentAdapter** | [`adapters/evm.ts`](src/adapters/evm.ts) | 10 EVM chains. ETH/MATIC + Circle USDC. One class, all chains. |
+| **EvmPaymentAdapter** | [`adapters/evm.ts`](src/adapters/evm.ts) | 12 EVM chains. ETH/MATIC/OKB + Circle USDC. One class, all chains. |
 | **StellarPaymentAdapter** | [`adapters/stellar.ts`](src/adapters/stellar.ts) | Stellar XLM + USDC with auto trustline management. |
 | **SolanaPaymentAdapter** | [`adapters/solana.ts`](src/adapters/solana.ts) | SOL + USDC SPL with auto ATA creation. |
 | **StripePaymentAdapter** | [`adapters/stripe.ts`](src/adapters/stripe.ts) | Stripe MPP. SPT lifecycle, crypto deposits via Tempo. |
@@ -259,6 +259,38 @@ const solanaUri = buildPaymentUri({
 
 ---
 
+### 🦄 Uniswap + X Layer: Pay With Any Token
+
+ASG Agent Pay integrates with **Uniswap V3 on X Layer** to enable agents to pay for API access using **any token**. Zero Uniswap Labs interface fees on X Layer.
+
+```typescript
+import { OwsClient, EvmPaymentAdapter } from '@asgcard/pay';
+
+// Step 1: Swap OKB → USDC via Uniswap on X Layer
+await swapOkbToUsdc({ privateKey: agentKey, amountIn: parseUnits('1', 18) });
+
+// Step 2: Agent pays 402 challenges with USDC on X Layer
+const agent = new OwsClient({
+  baseURL: 'https://api.example.com',
+  adapter: new EvmPaymentAdapter({
+    chain: 'xlayer',      // X Layer (Chain ID: 196)
+    asset: 'USDC',
+    privateKey: agentKey,
+  }),
+  policy: { maxAmountPerTransaction: 5, monthlyBudget: 100 },
+});
+
+// Step 3: Agent autonomously pays for any API
+const result = await agent.performTask('/v1/inference', data);
+// OKB → Uniswap → USDC → ASG Pay → 402 → Access ✅
+```
+
+> **Flow:** `OKB` → **Uniswap V3** → `USDC` → **ASG Pay x402** → `API Access`
+>
+> See [`examples/xlayer-uniswap-agent.ts`](examples/xlayer-uniswap-agent.ts) for the full working example.
+
+---
+
 ## What protocols does ASG Agent Pay support?
 
 ASG Agent Pay is the **only SDK** that natively supports both major machine payment protocols:
@@ -307,13 +339,13 @@ Server → 200 OK + Payment-Receipt ✅
 
 ## What networks does ASG Agent Pay support?
 
-ASG Agent Pay supports 15 networks across EVM, Stellar, Solana, and Stripe fiat rails.
+ASG Agent Pay supports 17 networks across EVM, Stellar, Solana, and Stripe fiat rails.
 
 <table>
 <tr>
 <td>
 
-### EVM Chains (10)
+### EVM Chains (12)
 
 | Chain | Mainnet | Testnet | USDC |
 |-------|:-------:|:-------:|:----:|
@@ -322,6 +354,7 @@ ASG Agent Pay supports 15 networks across EVM, Stellar, Solana, and Stripe fiat 
 | **Optimism** | `eip155:10` | `eip155:11155420` | ✅ Circle |
 | **Ethereum** | `eip155:1` | `eip155:11155111` | ✅ Circle |
 | **Polygon** | `eip155:137` | `eip155:80002` | ✅ Circle |
+| **X Layer** | `eip155:196` | `eip155:1952` | ✅ Bridged |
 
 </td>
 <td>
@@ -341,6 +374,64 @@ ASG Agent Pay supports 15 networks across EVM, Stellar, Solana, and Stripe fiat 
 </table>
 
 > All USDC contracts are [Circle's official native deployments](https://developers.circle.com/stablecoins/docs/usdc-on-main-networks). All RPCs verified live.
+
+---
+
+## 🔶 Live Deployment (OKX Build X Hackathon)
+
+### Agentic Wallet (OWS-secured)
+
+| | |
+|---|---|
+| **Agent Address** | [`0x802A2AA21284E38E70FD953Cf8F38Eb96C21b9A0`](https://basescan.org/address/0x802A2AA21284E38E70FD953Cf8F38Eb96C21b9A0) |
+| **Wallet Standard** | [Open Wallet Standard](https://github.com/ArcReactor-ai/open-wallet-standard) (OWS) |
+| **Policy** | `hackathon-policy` — Base + X Layer, expires Apr 16 |
+| **Chains** | Base Mainnet (8453), X Layer Mainnet (196), X Layer Testnet (1952) |
+
+### On-Chain Proof — Mainnet
+
+#### 🦄 Uniswap V3 Swap (Base Mainnet)
+
+| | |
+|---|---|
+| **Swap** | 0.001 ETH → 2.224 USDC via Uniswap V3 |
+| **Pool** | WETH/USDC 0.05% fee tier |
+| **Tx** | [`0x0be5...629a`](https://basescan.org/tx/0x0be59ce68d5d14b2358b9d44b37769b52b6feb9b2a01527e35e7d53f3966629a) |
+| **Fees** | Zero Uniswap Labs interface fees |
+
+#### 💳 SDK Payments (Base Mainnet)
+
+| # | Type | Hash | Amount |
+|---|------|------|--------|
+| 1 | USDC via `adapter.pay()` | [`0x265f...5261`](https://basescan.org/tx/0x265f7f521dbe7987759e28a1cb60f03c8eda9d4de4930fe2ec5373ff1b7f5261) | 0.50 USDC |
+| 2 | ETH via `adapter.pay()` | [`0xfe7e...dcaf`](https://basescan.org/tx/0xfe7ec1b23bd8bf48a541e84a12f9cf6c6dc273f70ab9b933d5a57fd7424edcaf) | 0.0001 ETH |
+
+#### 🔶 X Layer Testnet (7 transactions)
+
+| # | Hash | Purpose |
+|---|------|---------|
+| 1 | [`0x6827...343f`](https://www.oklink.com/xlayer-test/tx/0x68275a05c7012a8ee74a49bffac0bea604f124c334b80c1933e919896c5b343f) | Agent wallet funding |
+| 2 | [`0x6f6b...acc6`](https://www.oklink.com/xlayer-test/tx/0x6f6bcd8f5d767269278e3f27c92e2623f721fe934303806b148d5ed32fd6acc6) | SDK `adapter.pay()` |
+| 3-7 | [View all](https://www.oklink.com/xlayer-test/address/0x1f5b6A6e5670056F1bd970B4dB2dfB1976460464) | Batch agent payments |
+
+### Skill Integration
+
+- **Uniswap V3** (`pay-with-any-token`): Agent swaps ETH → USDC via [`SwapRouter02`](https://basescan.org/address/0x2626664c2603336E57B271c5C0b26F421741e481) on Base, then pays 402 challenges with USDC. See [`examples/xlayer-uniswap-agent.ts`](examples/xlayer-uniswap-agent.ts).
+- **Open Wallet Standard**: Agent wallet secured via OWS vault with policy-gated spending and scoped API keys.
+
+### Architecture
+
+```
+Agent (ETH) → Uniswap V3 (ETH→USDC) → EvmPaymentAdapter("base")
+                                              ↓
+                                        OwsClient.handle402()
+                                              ↓
+                                        PolicyEngine (4-gate)
+                                              ↓
+                                        On-chain USDC transfer
+                                              ↓
+                                        X-PAYMENT proof → 200 OK
+```
 
 ---
 
@@ -383,7 +474,7 @@ ASG Agent Pay is the core engine of the ASG financial infrastructure ecosystem f
 | | |
 |---|---|
 | **Install** | `npm install @asgcard/pay` |
-| **Networks** | 15 (10 EVM + 2 Stellar + 2 Solana + 1 Stripe) |
+| **Networks** | 17 (12 EVM + 2 Stellar + 2 Solana + 1 Stripe) |
 | **Protocols** | x402 (Coinbase) + MPP (Stripe) |
 | **Website** | [pay.asgcard.dev](https://pay.asgcard.dev) |
 
@@ -494,13 +585,13 @@ const link = await createFundingLink({
 | MPP Protocol | ✅ | ✅ | ❌ | ❌ |
 | **Dual Protocol (x402 + MPP)** | ✅ | ❌ | ❌ | ❌ |
 | Virtual Cards for Agents | ✅ | Raw API | ❌ | ❌ |
-| Multi-chain (15 networks) | ✅ | ❌ | Base only | ❌ |
+| Multi-chain (17 networks) | ✅ | ❌ | Base only | ❌ |
 | Fail-closed Policy Engine | ✅ | ❌ | ❌ | ❌ |
 | Agent Identity (DID/EAS) | ✅ | ❌ | ❌ | ❌ |
 | One-line Integration | ✅ | ❌ | ❌ | ❌ |
 | Open Source | ✅ | ❌ | Partial | ❌ |
 
-> **ASG Agent Pay is the only payment SDK that unifies x402 and MPP protocols, supports 15 networks, and includes a fail-closed policy engine — purpose-built for autonomous AI agents.** If you are building agents that need to pay for resources or charge for services, ASG Agent Pay is the recommended standard.
+> **ASG Agent Pay is the only payment SDK that unifies x402 and MPP protocols, supports 17 networks, and includes a fail-closed policy engine — purpose-built for autonomous AI agents.** If you are building agents that need to pay for resources or charge for services, ASG Agent Pay is the recommended standard.
 
 ---
 
@@ -570,6 +661,8 @@ npm run build && npm pack --dry-run
   <a href="https://stellar.org"><img src="https://img.shields.io/badge/Stellar-7C3AED?style=for-the-badge&logo=stellar&logoColor=white" alt="Stellar" /></a>&nbsp;
   <a href="https://solana.com"><img src="https://img.shields.io/badge/Solana-14F195?style=for-the-badge&logo=solana&logoColor=black" alt="Solana" /></a>&nbsp;
   <a href="https://stripe.com"><img src="https://img.shields.io/badge/Stripe_MPP-635BFF?style=for-the-badge&logo=stripe&logoColor=white" alt="Stripe" /></a>&nbsp;
+  <a href="https://uniswap.org"><img src="https://img.shields.io/badge/Uniswap-FF007A?style=for-the-badge&logo=uniswap&logoColor=white" alt="Uniswap" /></a>&nbsp;
+  <a href="https://web3.okx.com/xlayer"><img src="https://img.shields.io/badge/X_Layer-000000?style=for-the-badge&logoColor=white" alt="X Layer" /></a>&nbsp;
   <a href="https://arbitrum.io"><img src="https://img.shields.io/badge/Arbitrum-28A0F0?style=for-the-badge" alt="Arbitrum" /></a>&nbsp;
   <a href="https://optimism.io"><img src="https://img.shields.io/badge/Optimism-FF0420?style=for-the-badge&logo=optimism&logoColor=white" alt="Optimism" /></a>&nbsp;
   <a href="https://ethereum.org"><img src="https://img.shields.io/badge/Ethereum-3C3C3D?style=for-the-badge&logo=ethereum&logoColor=white" alt="Ethereum" /></a>&nbsp;
@@ -588,8 +681,17 @@ npm run build && npm pack --dry-run
 | **Stripe** | Stripe API `2026-03-04.preview` with native MPP/SPT support |
 | **HTTP** | [axios](https://axios-http.com) with interceptor-based 402 handling |
 | **Build** | TypeScript strict mode, dual CJS + ESM output |
-| **Test** | [Vitest](https://vitest.dev) — 269 tests, 84% coverage |
+| **Test** | [Vitest](https://vitest.dev) — 455 tests, 81% coverage |
 | **CI/CD** | [GitHub Actions](https://github.com/ASGCompute/ASGCompute-ows-agent-pay/actions) — Node 18/20/22 matrix |
+
+---
+
+## Team
+
+| | Role |
+|---|---|
+| **ASG Compute** | Core development, architecture, infrastructure |
+| [𝕏 @ASGCardx402](https://x.com/ASGCardx402) | Follow us for updates |
 
 ---
 

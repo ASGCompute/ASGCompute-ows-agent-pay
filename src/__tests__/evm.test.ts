@@ -12,6 +12,7 @@ describe('EvmPaymentAdapter', () => {
       'optimism', 'optimism-sepolia',
       'ethereum', 'ethereum-sepolia',
       'polygon', 'polygon-amoy',
+      'xlayer', 'xlayer-testnet',
     ];
 
     it.each(allChains)('creates adapter for chain: %s', (chainName) => {
@@ -49,6 +50,8 @@ describe('EvmPaymentAdapter', () => {
       ['ethereum-sepolia', 11155111],
       ['polygon', 137],
       ['polygon-amoy', 80002],
+      ['xlayer', 196],
+      ['xlayer-testnet', 1952],
     ];
 
     it.each(chainIdMap)(
@@ -69,6 +72,7 @@ describe('EvmPaymentAdapter', () => {
       'optimism', 'optimism-sepolia',
       'ethereum', 'ethereum-sepolia',
       'polygon',
+      'xlayer',
     ];
 
     it.each(chainsWithUsdc)(
@@ -87,6 +91,15 @@ describe('EvmPaymentAdapter', () => {
       expect(() => {
         new EvmPaymentAdapter({
           chain: 'polygon-amoy',
+          asset: 'USDC',
+        });
+      }).toThrow(/No USDC contract/);
+    });
+
+    it('xlayer-testnet rejects USDC (no contract)', () => {
+      expect(() => {
+        new EvmPaymentAdapter({
+          chain: 'xlayer-testnet',
           asset: 'USDC',
         });
       }).toThrow(/No USDC contract/);
@@ -132,6 +145,10 @@ describe('EvmPaymentAdapter', () => {
     it('polygon → Polygon', () => {
       expect(new EvmPaymentAdapter({ chain: 'polygon' }).chainName).toBe('Polygon');
     });
+
+    it('xlayer → X Layer', () => {
+      expect(new EvmPaymentAdapter({ chain: 'xlayer' }).chainName).toBe('X Layer');
+    });
   });
 
   // ── Logger ──────────────────────────────────────────────────────
@@ -160,9 +177,9 @@ describe('EvmPaymentAdapter', () => {
   // ── listEvmChains() helper ──────────────────────────────────────
 
   describe('listEvmChains()', () => {
-    it('returns all 10 chains', () => {
+    it('returns all 12 chains', () => {
       const chains = listEvmChains();
-      expect(chains.length).toBe(10);
+      expect(chains.length).toBe(12);
     });
 
     it('each entry has required fields', () => {

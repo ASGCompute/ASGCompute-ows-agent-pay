@@ -66,7 +66,7 @@ npm test
 npm run test:watch
 
 # Full suite including live Stripe integration (requires credentials)
-STRIPE_SECRET_KEY=sk_test_... npm test
+STRIPE_SECRET_KEY=sk_live_... npm test
 ```
 
 All new features must include tests. We target 100% coverage on critical paths (policy engine, protocol detection, payment settlement).
@@ -79,4 +79,4 @@ All new features must include tests. We target 100% coverage on critical paths (
 
 ## License
 
-By contributing, you agree that your contributions will be licensed under the [Apache 2.0 License](LICENSE).
+By contributing, you agree that your contributions will be licensed under the [MIT License](LICENSE).

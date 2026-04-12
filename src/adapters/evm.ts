@@ -20,6 +20,8 @@ import {
   sepolia as ethereumSepolia,
   polygon,
   polygonAmoy,
+  xLayer,
+  xLayerTestnet,
 } from 'viem/chains';
 import { PaymentAdapter } from './types';
 import { Logger, noopLogger } from '../logger';
@@ -37,7 +39,9 @@ export type EvmChainName =
   | 'ethereum'
   | 'ethereum-sepolia'
   | 'polygon'
-  | 'polygon-amoy';
+  | 'polygon-amoy'
+  | 'xlayer'
+  | 'xlayer-testnet';
 
 interface ChainConfig {
   chain: Chain;
@@ -109,6 +113,18 @@ const CHAIN_REGISTRY: Record<EvmChainName, ChainConfig> = {
     chain: polygonAmoy,
     displayName: 'Polygon Amoy',
     usdc: null, // No official Circle testnet USDC on Amoy yet
+  },
+
+  // ── X Layer (OKX L2, Polygon CDK) ───────────────────────────────
+  'xlayer': {
+    chain: xLayer,
+    displayName: 'X Layer',
+    usdc: '0x74b7f16337b8972027f6196a17a631ac6de26d22', // Circle Bridged USDC Standard
+  },
+  'xlayer-testnet': {
+    chain: xLayerTestnet,
+    displayName: 'X Layer Testnet',
+    usdc: null,
   },
 };
 
