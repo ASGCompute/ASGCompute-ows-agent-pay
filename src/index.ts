@@ -63,6 +63,10 @@ export {
 } from './adapters/ows';
 export type { OwsAdapterOptions } from './adapters/ows';
 
+// Providers — OnchainOS (OKX DEX Aggregator, 400+ DEX sources, X Layer native)
+export { OnchainOSProvider, createOnchainOSFromEnv } from './providers/onchainos';
+export type { OnchainOSConfig, DexQuoteParams, DexSwapParams, DexQuoteResult, DexSwapResult } from './providers/onchainos';
+
 // Interface
 export type {
   PaymentAdapter,
