@@ -388,16 +388,24 @@ ASG Agent Pay supports 17 networks across EVM, Stellar, Solana, and Stripe fiat 
 | **Policy** | `hackathon-policy` — Base + X Layer, expires Apr 16 |
 | **Chains** | Base Mainnet (8453), X Layer Mainnet (196), X Layer Testnet (1952) |
 
-### On-Chain Proof — Mainnet
+### On-Chain Proof — Mainnet (12 transactions)
 
-#### 🦄 Uniswap V3 Swap (Base Mainnet)
+#### 🦄 Uniswap V3 Swaps (Base Mainnet — 8 swaps)
 
-| | |
-|---|---|
-| **Swap** | 0.001 ETH → 2.224 USDC via Uniswap V3 |
-| **Pool** | WETH/USDC 0.05% fee tier |
-| **Tx** | [`0x0be5...629a`](https://basescan.org/tx/0x0be59ce68d5d14b2358b9d44b37769b52b6feb9b2a01527e35e7d53f3966629a) |
-| **Fees** | Zero Uniswap Labs interface fees |
+| # | Direction | Amount | Tx Hash |
+|---|-----------|--------|---------|
+| 1 | ETH→USDC | 0.001 ETH → 2.224 USDC | [`0x0be5...629a`](https://basescan.org/tx/0x0be59ce68d5d14b2358b9d44b37769b52b6feb9b2a01527e35e7d53f3966629a) |
+| 2 | ETH→USDC | 0.0004 ETH | [`0x768e...37e1`](https://basescan.org/tx/0x768ea6fea794a6ca82f8a410179879e790c187edf33392bf07f81a96e9de37e1) |
+| 3 | USDC→ETH | 1.0 USDC | [`0xba6c...9daa`](https://basescan.org/tx/0xba6c486f627096e41b43986111aabd0ccb03d074246d25d293e4be5006cb9daa) |
+| 4 | ETH→USDC | 0.0003 ETH | [`0x2ebb...5dce`](https://basescan.org/tx/0x2ebb2ba1c5ce7118414c9e6b415ceed8702b7117478f3ced82760b03cdce5dce) |
+| 5 | USDC→ETH | 0.5 USDC | [`0x56cd...e48e`](https://basescan.org/tx/0x56cd1e5e212ffb46b5a3ce2a28b89716beb72411dcc750f5026b7d43b335e48e) |
+| 6 | ETH→USDC | 0.0002 ETH | [`0x1f5e...53b7`](https://basescan.org/tx/0x1f5ec0ea2796bd57d9353d412564d3cbcd299b62630ef6e5c3399b3975d253b7) |
+| 7 | USDC→ETH | 0.3 USDC | [`0x0ddf...de14`](https://basescan.org/tx/0x0ddf6bde992ca37228e48b252d27b4465a5eaf779b98d66a7e14cffd00fbde14) |
+| 8 | USDC→ETH | 0.2 USDC | [`0xce3d...948d`](https://basescan.org/tx/0xce3d2f3767edca142ff5978eb61eb78e6dbaf1e3bbf61b3ad1235fbb3f9f948d) |
+
+> **Pool:** WETH/USDC 0.05% fee tier via [`SwapRouter02`](https://basescan.org/address/0x2626664c2603336E57B271c5C0b26F421741e481) | Zero Uniswap Labs interface fees
+>
+> [View full wallet history on Basescan →](https://basescan.org/address/0x802A2AA21284E38E70FD953Cf8F38Eb96C21b9A0)
 
 #### 💳 SDK Payments (Base Mainnet)
 
@@ -405,14 +413,8 @@ ASG Agent Pay supports 17 networks across EVM, Stellar, Solana, and Stripe fiat 
 |---|------|------|--------|
 | 1 | USDC via `adapter.pay()` | [`0x265f...5261`](https://basescan.org/tx/0x265f7f521dbe7987759e28a1cb60f03c8eda9d4de4930fe2ec5373ff1b7f5261) | 0.50 USDC |
 | 2 | ETH via `adapter.pay()` | [`0xfe7e...dcaf`](https://basescan.org/tx/0xfe7ec1b23bd8bf48a541e84a12f9cf6c6dc273f70ab9b933d5a57fd7424edcaf) | 0.0001 ETH |
-
-#### 🔶 X Layer Testnet (7 transactions)
-
-| # | Hash | Purpose |
-|---|------|---------|
-| 1 | [`0x6827...343f`](https://www.oklink.com/xlayer-test/tx/0x68275a05c7012a8ee74a49bffac0bea604f124c334b80c1933e919896c5b343f) | Agent wallet funding |
-| 2 | [`0x6f6b...acc6`](https://www.oklink.com/xlayer-test/tx/0x6f6bcd8f5d767269278e3f27c92e2623f721fe934303806b148d5ed32fd6acc6) | SDK `adapter.pay()` |
-| 3-7 | [View all](https://www.oklink.com/xlayer-test/address/0x1f5b6A6e5670056F1bd970B4dB2dfB1976460464) | Batch agent payments |
+| 3 | USDC approval | [`0x4043...0d5e`](https://basescan.org/tx/0x40436541927d16b24c65971c7d61ec069e0a8f5594f2a812ea2f85a99e890d5e) | max approve |
+| 4 | ETH→USDC | [`0xd15a...76f4`](https://basescan.org/tx/0xd15ad178562bdfaffeadc16dad60042d01bc323b90a458520462734e481676f4) | 0.0001 ETH |
 
 ### Skill Integration
 
