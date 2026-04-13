@@ -67,6 +67,10 @@ export type { OwsAdapterOptions } from './adapters/ows';
 export { OnchainOSProvider, createOnchainOSFromEnv } from './providers/onchainos';
 export type { OnchainOSConfig, DexQuoteParams, DexSwapParams, DexQuoteResult, DexSwapResult } from './providers/onchainos';
 
+// Providers — Cross-Chain Bridge (9 chains, USDC bridge, two-step routing)
+export { CrossChainBridge } from './providers/bridge';
+export type { BridgeQuoteParams, BridgeQuoteResult, BridgeRoute, BridgeStatus, CrossChainBridgeConfig } from './providers/bridge';
+
 // Interface
 export type {
   PaymentAdapter,
