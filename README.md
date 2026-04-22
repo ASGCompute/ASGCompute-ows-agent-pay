@@ -31,8 +31,7 @@
 
 <p align="center">
   <a href="https://github.com/ArcReactor-ai/open-wallet-standard"><img src="https://img.shields.io/badge/🏆_OWS_Hackathon-Winner-FFD700?style=flat-square" alt="OWS Hackathon Winner" /></a>&nbsp;&nbsp;
-  <a href="https://web3.okx.com/xlayer"><img src="https://img.shields.io/badge/🏆_Build_X_Season_2-3rd_Place-CD7F32?style=flat-square" alt="Build X Season 2 — 3rd Place" /></a>&nbsp;&nbsp;
-  <a href="https://skale.space"><img src="https://img.shields.io/badge/⚡_SKALE_Network-Integration_Partner-000000?style=flat-square" alt="SKALE Network" /></a>
+  <a href="https://web3.okx.com/xlayer"><img src="https://img.shields.io/badge/🏆_Build_X_Season_2-3rd_Place-CD7F32?style=flat-square" alt="Build X Season 2 — 3rd Place" /></a>
 </p>
 
 ---
@@ -361,7 +360,7 @@ ASG Agent Pay supports 17 networks across EVM, Stellar, Solana, and Stripe fiat 
 | **Ethereum** | `eip155:1` | `eip155:11155111` | ✅ Circle |
 | **Polygon** | `eip155:137` | `eip155:80002` | ✅ Circle |
 | **X Layer** | `eip155:196` | `eip155:1952` | ✅ Bridged |
-| **SKALE Europa** | `eip155:2046399126` | — | ✅ Bridged | ⚡ Zero gas |
+| **SKALE Europa** | `eip155:2046399126` | — | ⚡ Zero gas |
 
 </td>
 <td>
@@ -381,6 +380,12 @@ ASG Agent Pay supports 17 networks across EVM, Stellar, Solana, and Stripe fiat 
 </table>
 
 > All USDC contracts are [Circle's official native deployments](https://developers.circle.com/stablecoins/docs/usdc-on-main-networks). All RPCs verified live.
+
+### ⚡ Coming Soon: SKALE Europa Hub
+
+> **Zero-gas EVM chain** optimized for AI agent micropayments. [SKALE Network](https://skale.space) eliminates gas fees entirely — agents can settle unlimited x402 payments at zero cost with ~1s finality. Integration code complete, facilitator deployment pending.
+>
+> **Why SKALE?** Traditional EVM chains charge gas per transaction. For high-frequency agent workloads (100+ API calls/minute), gas costs erode margins. SKALE Europa Hub provides the same EVM execution environment with zero gas fees, making it the ideal settlement layer for autonomous agent micropayments.
 
 ---
 
