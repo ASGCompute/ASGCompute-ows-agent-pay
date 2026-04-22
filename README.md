@@ -29,6 +29,28 @@
   <a href="https://x.com/ASGCardx402">𝕏 Twitter</a>
 </p>
 
+<br/>
+
+<p align="center">
+  <a href="https://github.com/ArcReactor-ai/open-wallet-standard"><img src="https://img.shields.io/badge/🥇_OWS_Hackathon-Winner-FFD700?style=for-the-badge" alt="OWS Hackathon Winner" /></a>&nbsp;
+  <a href="https://web3.okx.com/xlayer"><img src="https://img.shields.io/badge/🥉_Build_X:_Season_2-3rd_Place-CD7F32?style=for-the-badge" alt="Build X Season 2 — 3rd Place" /></a>
+</p>
+
+<table align="center">
+<tr>
+<td align="center" width="50%">
+<h4>🥇 OWS Hackathon — Winner</h4>
+<sub>First-ever <a href="https://github.com/ArcReactor-ai/open-wallet-standard">Open Wallet Standard</a> Hackathon</sub><br/>
+<sub>Recognized for pioneering agent financial identity<br/>and multi-chain wallet abstraction via OWS</sub>
+</td>
+<td align="center" width="50%">
+<h4>🥉 Build X: Season 2 — 3rd Place</h4>
+<sub><a href="https://web3.okx.com/xlayer">X Layer</a> Ecosystem Hackathon</sub><br/>
+<sub>Awarded for production-grade x402 payment<br/>infrastructure with live Uniswap V3 integration</sub>
+</td>
+</tr>
+</table>
+
 ---
 
 ## What is ASG Agent Pay?
