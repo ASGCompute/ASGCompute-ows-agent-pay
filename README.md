@@ -29,27 +29,11 @@
   <a href="https://x.com/ASGCardx402">𝕏 Twitter</a>
 </p>
 
-<br/>
-
 <p align="center">
-  <a href="https://github.com/ArcReactor-ai/open-wallet-standard"><img src="https://img.shields.io/badge/🥇_OWS_Hackathon-Winner-FFD700?style=for-the-badge" alt="OWS Hackathon Winner" /></a>&nbsp;
-  <a href="https://web3.okx.com/xlayer"><img src="https://img.shields.io/badge/🥉_Build_X:_Season_2-3rd_Place-CD7F32?style=for-the-badge" alt="Build X Season 2 — 3rd Place" /></a>
+  <a href="https://github.com/ArcReactor-ai/open-wallet-standard"><img src="https://img.shields.io/badge/🏆_OWS_Hackathon-Winner-FFD700?style=flat-square" alt="OWS Hackathon Winner" /></a>&nbsp;&nbsp;
+  <a href="https://web3.okx.com/xlayer"><img src="https://img.shields.io/badge/🏆_Build_X_Season_2-3rd_Place-CD7F32?style=flat-square" alt="Build X Season 2 — 3rd Place" /></a>&nbsp;&nbsp;
+  <a href="https://skale.space"><img src="https://img.shields.io/badge/⚡_SKALE_Network-Integration_Partner-000000?style=flat-square" alt="SKALE Network" /></a>
 </p>
-
-<table align="center">
-<tr>
-<td align="center" width="50%">
-<h4>🥇 OWS Hackathon — Winner</h4>
-<sub>First-ever <a href="https://github.com/ArcReactor-ai/open-wallet-standard">Open Wallet Standard</a> Hackathon</sub><br/>
-<sub>Recognized for pioneering agent financial identity<br/>and multi-chain wallet abstraction via OWS</sub>
-</td>
-<td align="center" width="50%">
-<h4>🥉 Build X: Season 2 — 3rd Place</h4>
-<sub><a href="https://web3.okx.com/xlayer">X Layer</a> Ecosystem Hackathon</sub><br/>
-<sub>Awarded for production-grade x402 payment<br/>infrastructure with live Uniswap V3 integration</sub>
-</td>
-</tr>
-</table>
 
 ---
 
@@ -377,6 +361,7 @@ ASG Agent Pay supports 17 networks across EVM, Stellar, Solana, and Stripe fiat 
 | **Ethereum** | `eip155:1` | `eip155:11155111` | ✅ Circle |
 | **Polygon** | `eip155:137` | `eip155:80002` | ✅ Circle |
 | **X Layer** | `eip155:196` | `eip155:1952` | ✅ Bridged |
+| **SKALE Europa** | `eip155:2046399126` | — | ✅ Bridged | ⚡ Zero gas |
 
 </td>
 <td>
@@ -690,7 +675,8 @@ npm run build && npm pack --dry-run
   <a href="https://arbitrum.io"><img src="https://img.shields.io/badge/Arbitrum-28A0F0?style=for-the-badge" alt="Arbitrum" /></a>&nbsp;
   <a href="https://optimism.io"><img src="https://img.shields.io/badge/Optimism-FF0420?style=for-the-badge&logo=optimism&logoColor=white" alt="Optimism" /></a>&nbsp;
   <a href="https://ethereum.org"><img src="https://img.shields.io/badge/Ethereum-3C3C3D?style=for-the-badge&logo=ethereum&logoColor=white" alt="Ethereum" /></a>&nbsp;
-  <a href="https://polygon.technology"><img src="https://img.shields.io/badge/Polygon-8247E5?style=for-the-badge&logo=polygon&logoColor=white" alt="Polygon" /></a>
+  <a href="https://polygon.technology"><img src="https://img.shields.io/badge/Polygon-8247E5?style=for-the-badge&logo=polygon&logoColor=white" alt="Polygon" /></a>&nbsp;
+  <a href="https://skale.space"><img src="https://img.shields.io/badge/SKALE-000000?style=for-the-badge&logoColor=white" alt="SKALE" /></a>
 </p>
 
 ---
