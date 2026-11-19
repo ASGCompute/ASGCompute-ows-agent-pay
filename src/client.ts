@@ -1,6 +1,6 @@
-import axios, { AxiosInstance, AxiosError, AxiosResponse } from 'axios';
+import axios, { AxiosInstance, AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import { PaymentAdapter } from './adapters/types';
-import { BudgetPolicy, PolicyEngine } from './policy';
+import { BudgetPolicy, PolicyEngine, DacsMandateMeta, assertDacsSpendMandate } from './policy';
 import { Logger, noopLogger } from './logger';
 import {
   detectProtocol,
@@ -11,10 +11,16 @@ import {
 } from './mpp';
 import { StripePaymentAdapter } from './adapters/stripe';
 
+export { DacsMandateMeta, assertDacsSpendMandate };
+
+interface DacsAxiosRequestConfig extends InternalAxiosRequestConfig {
+  dacsMeta?: DacsMandateMeta;
+}
+
 export interface OWSClientOptions {
   /** Base URL of the API that returns 402 challenges. */
   baseURL: string;
-  /** Budget policy for the agent. */
+  /** Budget policy for the agent (supports optional DACS-Standard §9.5.7 mandate bounds). */
   policy: BudgetPolicy;
   /** Any chain adapter implementing PaymentAdapter (EVM, Stellar, Stripe, etc.) */
   adapter: PaymentAdapter;
@@ -25,7 +31,7 @@ export interface OWSClientOptions {
    * @example
    * ```ts
    * const client = new OwsClient({
-   *   baseURL: 'https://api.example.com',
+   *   baseURL: '[https://api.example.com](https://api.example.com)',
    *   policy: { monthlyBudget: 10, maxAmountPerTransaction: 1 },
    *   adapter: new EvmPaymentAdapter({ chain: 'base' }),
    *   logger: console.log,
@@ -159,8 +165,9 @@ export class OwsClient {
 
     this.log(`[OWS/MPP] 💰 Amount: $${requestedUsdAmount} ${request.currency?.toUpperCase() || 'USD'}`);
 
-    // ── Step 4: Policy gate ───────────────────────────────────────
-    if (!this.policyEngine.checkPolicy(requestedUsdAmount, request.recipient)) {
+    // ── Step 4: Policy & DACS-Standard (§9.5.7) gate ──────────────
+    const dacsMeta = (error.config as DacsAxiosRequestConfig | undefined)?.dacsMeta;
+    if (!this.policyEngine.checkPolicy(requestedUsdAmount, request.recipient, dacsMeta)) {
       this.log('[OWS/MPP] 🛑 REJECTED by PolicyEngine');
       return Promise.reject(error);
     }
@@ -257,8 +264,9 @@ export class OwsClient {
     this.log(`[OWS/x402] 💰 Amount: $${requestedUsdAmount} → ${payTo.slice(0, 10)}…`);
     this.log(`[OWS/x402] ⛓️  Chain: ${this.adapter.chainName} (${this.adapter.caip2Id})`);
 
-    // ── Policy gate ───────────────────────────────────────────────
-    if (!this.policyEngine.checkPolicy(requestedUsdAmount, payTo)) {
+    // ── Policy & DACS-Standard (§9.5.7) gate ──────────────────────
+    const dacsMeta = (error.config as DacsAxiosRequestConfig | undefined)?.dacsMeta;
+    if (!this.policyEngine.checkPolicy(requestedUsdAmount, payTo, dacsMeta)) {
       this.log('[OWS/x402] 🛑 REJECTED by PolicyEngine');
       return Promise.reject(error);
     }
@@ -387,9 +395,9 @@ export class OwsClient {
    * The agent simply calls performTask() — the interceptor handles
    * everything else (payment, policy, retry) transparently.
    */
-  async performTask(endpoint: string, data?: any): Promise<any> {
+  async performTask(endpoint: string, data?: any, dacsMeta?: DacsMandateMeta): Promise<any> {
     this.log(`[Agent] 🧠 Sending task to ${endpoint}`);
-    const res = await this.api.post(endpoint, data);
+    const res = await this.api.post(endpoint, data, { dacsMeta } as any);
     this.log(`[Agent] ✅ Task completed`);
     return res.data;
   }
@@ -397,8 +405,8 @@ export class OwsClient {
   /**
    * GET request with autonomous 402 handling.
    */
-  async get(endpoint: string): Promise<any> {
-    const res = await this.api.get(endpoint);
+  async get(endpoint: string, dacsMeta?: DacsMandateMeta): Promise<any> {
+    const res = await this.api.get(endpoint, { dacsMeta } as any);
     return res.data;
   }
 }
